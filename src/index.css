@@ -65,3 +65,53 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/*
+ * Animated aurora backdrop. Sits behind the hero video so the page stays
+ * cinematic even when the remote video can't load (slow network, blocked CDN).
+ */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 55% at 50% 100%, rgba(20, 83, 45, 0.35), transparent 65%),
+    #08020e;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 65vmax;
+  height: 65vmax;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
+  will-change: transform;
+}
+.aurora::before {
+  background: radial-gradient(circle at center, rgba(124, 58, 237, 0.5), transparent 62%);
+  top: -22vmax;
+  left: -12vmax;
+  animation: aurora-drift-a 26s ease-in-out infinite alternate;
+}
+.aurora::after {
+  background: radial-gradient(circle at center, rgba(16, 185, 129, 0.35), transparent 62%);
+  bottom: -28vmax;
+  right: -12vmax;
+  animation: aurora-drift-b 32s ease-in-out infinite alternate;
+}
+@keyframes aurora-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(18vmax, 12vmax, 0) scale(1.15); }
+}
+@keyframes aurora-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to   { transform: translate3d(-16vmax, -12vmax, 0) scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aurora::before,
+  .aurora::after {
+    animation: none;
+  }
+}

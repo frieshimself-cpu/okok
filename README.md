@@ -52,25 +52,49 @@ fork choice. Run `npm run demo` to watch all of it happen in a terminal.
 
 ## The website
 
-React + Vite + TypeScript + Tailwind + framer-motion + lucide-react. A single
-landing page: fixed transparent navbar and a full-screen hero with
+React + Vite + TypeScript + Tailwind + framer-motion + lucide-react. One page,
+five sections, every control wired to the real node:
 
-- a full-bleed background video (no overlay),
-- scroll-linked parallax — copy fades and rises (`-60%`), the liquid-glass
-  dashboard drifts up (`-25%`), the foreground grass drifts down (`+20%`),
-- a dashboard mock containing the **Verdant console** (the live chain) and a
-  miniature site preview with a JS-managed fade-in/out video loop,
-- `AnimatedText` hover effect (label slides up, a copy slides in from below)
-  on every button and nav link, honoring `prefers-reduced-motion` via the
-  `FadeUp` reveals.
+- **Hero** — full-bleed background video over an animated aurora fallback (if
+  the remote video can't load, the page stays cinematic instead of going
+  black), scroll-linked parallax (copy fades and rises `-60%`, the
+  liquid-glass dashboard drifts up `-25%`, the foreground grass drifts down
+  `+20%`), and a live badge showing the chain's current height.
+- **Console** — the dashboard mock holds the Verdant console (chat) and a
+  miniature site preview with a JS-managed fade-in/out video loop. Every chat
+  message mines a real block; on phones the console stacks below the preview.
+- **About** — live stat tiles (height, supply, cumulative work, difficulty).
+- **Protocol** — the four consensus rules, explained.
+- **Mining** — a live block explorer plus wallet card and buttons to mine
+  (with hashes/sec progress), send a signed transfer, and audit from genesis.
+- **Tokenomics** — the emission curve and consensus parameters, computed from
+  the very config the page runs.
 
-Z-stack: video `z-0` → dashboard `z-10` → hero copy `z-20` → grass `z-30` →
-navbar `z-50`. Fonts: Inter for UI, Instrument Serif inside the preview.
-All media assets are remote; there is nothing to host but static files.
+A single `ChainProvider` hosts the node, so the hero badge, console, explorer
+and stat tiles all reflect the same chain. Z-stack: video `z-0` → dashboard
+`z-10` → hero copy `z-20` → grass `z-30` → navbar `z-50`. Fonts: Inter for
+UI, Instrument Serif inside the preview.
+
+## Deploy
+
+The site is fully static — any static host works.
+
+**Vercel (recommended):** go to [vercel.com/new](https://vercel.com/new),
+import this repo, click Deploy. `vercel.json` pins the Vite preset (build
+`npm run build`, output `dist`), so there is nothing to configure. From a
+terminal it's `npx vercel --prod`.
+
+**GitHub Pages (already wired):** every push runs
+`.github/workflows/deploy.yml`, which tests, builds and publishes `dist/` to
+Pages. If the first run didn't enable Pages automatically, flip it once in
+repo Settings → Pages → Source: "GitHub Actions".
+
+The build uses a relative asset base (`base: "./"`), so the same `dist/`
+works on Vercel, Pages, Netlify, Cloudflare — or opened off a USB stick.
 
 ### Talk to the chain
 
-Open the page and type into the console (left panel of the dashboard):
+Open the page and type into the console (the chat panel of the dashboard):
 
 - *anything* → mines a block and reports hash, attempts, time, reward
 - "send 5 to the peer" → signs a transfer, mines it in, shows balances

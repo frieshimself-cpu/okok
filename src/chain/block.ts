@@ -51,6 +51,8 @@ export interface MineOptions {
    * blocking the UI thread. Omit for a tight synchronous grind (CLI/tests).
    */
   yieldEvery?: number;
+  /** Called every `yieldEvery` hashes with the running attempt count. */
+  onProgress?: (attempts: number, elapsedMs: number) => void;
 }
 
 export interface MinedHeader {
@@ -88,6 +90,7 @@ export async function mineHeader(template: BlockHeader, opts: MineOptions = {}):
     }
     nonce++;
     if (opts.yieldEvery && attempts % opts.yieldEvery === 0) {
+      opts.onProgress?.(attempts, now() - started);
       await new Promise((resolve) => setTimeout(resolve, 0));
     }
   }

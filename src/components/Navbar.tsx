@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
 import { AnimatedText } from "./AnimatedText";
 import { SecondaryButton } from "./Buttons";
@@ -9,7 +9,7 @@ import { Sheet } from "./Sheet";
 const navItems = [
   { name: "About", href: "#about" },
   { name: "Protocol", href: "#protocol" },
-  { name: "Mining", href: "#console" },
+  { name: "Mining", href: "#mining" },
   { name: "Tokenomics", href: "#tokenomics" },
 ];
 
@@ -28,11 +28,27 @@ function smoothScroll(href: string) {
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-transparent">
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 ${
+        scrolled ? "bg-[#08020e]/70 backdrop-blur-xl border-b border-white/5" : "bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-[1080px] items-center justify-between px-6 lg:px-0">
-        <a href="/" className="flex items-center gap-2 text-foreground">
+        <a
+          href="#hero"
+          onClick={smoothScroll("#hero")}
+          className="flex items-center gap-2 text-foreground"
+        >
           <MIcon name="eco" size={20} />
           <span className="text-base font-semibold tracking-tight">Verdant</span>
         </a>
@@ -58,10 +74,10 @@ export function Navbar() {
             {...hoverDriver}
             className="text-sm text-landing-text hover:text-foreground transition-colors"
           >
-            <AnimatedText>Login</AnimatedText>
+            <AnimatedText>Console</AnimatedText>
           </motion.a>
-          <SecondaryButton href="#console" onClick={smoothScroll("#console")} size="sm">
-            Get started
+          <SecondaryButton href="#mining" onClick={smoothScroll("#mining")} size="sm">
+            Start mining
           </SecondaryButton>
         </div>
 
@@ -99,18 +115,18 @@ export function Navbar() {
             }}
             className="text-lg text-landing-text transition-colors hover:text-foreground"
           >
-            Login
+            Console
           </a>
           <SecondaryButton
-            href="#console"
+            href="#mining"
             size="md"
             className="w-full"
             onClick={(e) => {
-              smoothScroll("#console")(e);
+              smoothScroll("#mining")(e);
               setMenuOpen(false);
             }}
           >
-            Get started
+            Start mining
           </SecondaryButton>
         </div>
       </Sheet>

@@ -111,6 +111,30 @@ describe("proof-of-work mining", () => {
     expect(computeBlockHash(mined.header)).toBe(mined.hash);
     expect(mined.attempts).toBeGreaterThan(0);
   });
+
+  it("reports progress while grinding", async () => {
+    let calls = 0;
+    let lastAttempts = 0;
+    await mineHeader(
+      {
+        index: 1,
+        prevHash: "0".repeat(64),
+        merkleRoot: sha256Hex("progress"),
+        timestamp: 1_767_225_600_456,
+        difficulty: 8,
+        nonce: 0,
+      },
+      {
+        yieldEvery: 1,
+        onProgress: (attempts) => {
+          calls++;
+          lastAttempts = attempts;
+        },
+      },
+    );
+    expect(calls).toBeGreaterThan(0);
+    expect(lastAttempts).toBe(calls);
+  });
 });
 
 describe("the blockchain", () => {

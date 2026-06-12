@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { MouseEvent } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Globe, Instagram, Twitter } from "lucide-react";
 
 const DASHBOARD_VIDEO =
@@ -17,6 +18,7 @@ export function LivePreviewHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [email, setEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
+  const [manifestoOpen, setManifestoOpen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -74,7 +76,16 @@ export function LivePreviewHero() {
   }, []);
 
   return (
-    <div className="relative w-full h-full min-h-[500px] overflow-hidden rounded-2xl bg-black">
+    <div className="relative w-full h-full min-h-[440px] sm:min-h-[500px] overflow-hidden rounded-2xl bg-black">
+      {/* Gradient backdrop so the panel never renders pitch black if the
+          remote video can't load. */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(80% 60% at 70% 8%, rgba(124,58,237,0.30), transparent 60%), radial-gradient(70% 55% at 18% 92%, rgba(16,185,129,0.22), transparent 60%), #050208",
+        }}
+      />
       <video
         ref={videoRef}
         src={DASHBOARD_VIDEO}
@@ -160,13 +171,13 @@ export function LivePreviewHero() {
               spam, just blocks.
             </p>
             <div className="flex justify-center">
-              <a
-                href="#"
-                onClick={prevent}
+              <button
+                type="button"
+                onClick={() => setManifestoOpen(true)}
                 className="liquid-glass rounded-full px-5 py-1.5 text-white text-[11px] font-medium hover:bg-white/5 transition-colors"
               >
                 Manifesto
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -185,6 +196,40 @@ export function LivePreviewHero() {
           ))}
         </div>
       </div>
+
+      {/* The mock site's manifesto opens inside the preview panel itself. */}
+      <AnimatePresence>
+        {manifestoOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="absolute inset-0 z-30 flex items-center justify-center bg-black/80 p-6 backdrop-blur-md"
+          >
+            <div className="max-w-xs text-center">
+              <h2
+                className="mb-4 text-2xl text-white"
+                style={{ fontFamily: "'Instrument Serif', serif" }}
+              >
+                The Verdant Manifesto
+              </h2>
+              <p className="text-xs leading-relaxed text-white/70">
+                Chains don't need data centers. Proof should be something you can watch. Every
+                block here is mined by you, for you — signed, sealed and re-verified in the time
+                it takes to read this. Touch grass. Grow blocks.
+              </p>
+              <button
+                type="button"
+                onClick={() => setManifestoOpen(false)}
+                className="liquid-glass mt-5 rounded-full px-5 py-1.5 text-[11px] font-medium text-white hover:bg-white/5 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

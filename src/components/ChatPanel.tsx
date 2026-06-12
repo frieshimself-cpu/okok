@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FadeUp } from "./FadeUp";
 import { MIcon } from "./MIcon";
-import { useVerdantChain } from "../hooks/useVerdantChain";
+import { useChain } from "../context/ChainContext";
 
 interface Message {
   role: "assistant" | "user";
@@ -23,12 +23,12 @@ const SEED_MESSAGES: Message[] = [
   {
     role: "assistant",
     seeded: true,
-    text: "Every message you send below mines a real block: transactions signed with ECDSA, sealed with SHA-256 proof-of-work, the whole chain revalidated from genesis. Try it — ask for a block, a transfer, or an audit.",
+    text: "Every message you send below mines a real block: transactions signed with ECDSA, sealed with SHA-256 proof-of-work, the whole chain revalidated from genesis. Try it here — or scroll to the mining lab for the full explorer.",
   },
 ];
 
 export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: boolean }) {
-  const { booting, stats, handlePrompt } = useVerdantChain();
+  const { booting, stats, handlePrompt } = useChain();
   const [messages, setMessages] = useState<Message[]>(SEED_MESSAGES);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);

@@ -1,22 +1,28 @@
-import { FadeUp } from "./components/FadeUp";
+import { ChainProvider } from "./context/ChainContext";
 import { Hero } from "./components/Hero";
 import { Navbar } from "./components/Navbar";
+import { About } from "./components/sections/About";
+import { Protocol } from "./components/sections/Protocol";
+import { Mining } from "./components/sections/Mining";
+import { Tokenomics } from "./components/sections/Tokenomics";
+import { Footer } from "./components/sections/Footer";
 
 export default function App() {
   return (
-    <div className="landing-root font-inter min-h-screen relative overflow-x-hidden">
-      <Navbar />
-      <Hero />
-      {/* Breathing room below the hero so the parallax can complete; the
-          grass drifts down into this dark field as you scroll. */}
-      <footer className="relative flex h-[50vh] items-end justify-center pb-12">
-        <FadeUp>
-          <p className="max-w-[560px] px-6 text-center text-sm text-landing-text-muted">
-            Verdant is a complete proof-of-work blockchain — mined, signed and verified in your
-            browser. <span className="text-landing-text">Open source. No servers. Since block 0.</span>
-          </p>
-        </FadeUp>
-      </footer>
-    </div>
+    <ChainProvider>
+      <div className="landing-root font-inter min-h-screen relative overflow-x-hidden">
+        <Navbar />
+        <Hero />
+        {/* About carries extra top padding so the hero's foreground grass can
+            drift down into the gap without covering the heading. */}
+        <main className="relative">
+          <About />
+          <Protocol />
+          <Mining />
+          <Tokenomics />
+        </main>
+        <Footer />
+      </div>
+    </ChainProvider>
   );
 }
