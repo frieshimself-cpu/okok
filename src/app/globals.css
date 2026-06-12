@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --color-night: #060809;
+  --color-panel: #0b0f12;
+  --color-panel-2: #10161b;
+  --color-line: #1c272e;
+  --color-signal: #00ff9d;
+  --color-signal-dim: #00c87b;
+  --color-amber: #ffb02e;
+  --color-blood: #ff4d6d;
+  --color-violet: #a78bfa;
+  --color-ink: #e7ece9;
+  --color-dim: #8b979d;
+
+  --font-sans: var(--font-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jet), "JetBrains Mono", ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--color-night);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: #04130c;
+}
+
+/* ── Atmosphere ─────────────────────────────────────────────────────────── */
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(0, 255, 157, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 157, 0.05) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 35%, transparent 100%);
+}
+
+.glow-orb {
+  background: radial-gradient(closest-side, rgba(0, 255, 157, 0.16), transparent);
+  filter: blur(20px);
+}
+
+.text-glow {
+  text-shadow: 0 0 22px rgba(0, 255, 157, 0.5);
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.012));
+  border: 1px solid var(--color-line);
+  border-radius: 16px;
+}
+
+.card-hover {
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+  border-color: rgba(0, 255, 157, 0.45);
+  box-shadow: 0 0 32px rgba(0, 255, 157, 0.07);
+  transform: translateY(-2px);
+}
+
+.chip {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  border-radius: 9999px;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid;
+}
+
+/* ── Ticker marquee ─────────────────────────────────────────────────────── */
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 45s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── Misc animation ─────────────────────────────────────────────────────── */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.animate-blink {
+  animation: blink 1.4s steps(1) infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 157, 0.5); }
+  60% { box-shadow: 0 0 0 7px rgba(0, 255, 157, 0); }
+}
+.live-dot {
+  animation: pulse-dot 2s ease-out infinite;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-rise {
+  animation: rise 0.5s ease-out both;
+}
+
+/* Probability comparison bars */
+.bar-track {
+  height: 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s ease;
+}

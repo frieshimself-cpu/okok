@@ -1,126 +1,97 @@
-import { Box, Feather, Sparkles, Star, Sun } from "lucide-react";
-import { FadeUp } from "./FadeUp";
-import { GlowButton } from "./GlowButton";
-import { TokenCA } from "./TokenCA";
-import { useChain } from "../context/ChainContext";
+import CopyCA from "@/components/CopyCA";
+import { site } from "@/config/site";
 
-const HERO_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260325_094440_a3592600-bd1e-49e5-9bce-a73662061d83.mp4";
-
-const builders = [
-  { Icon: Sun, name: "Nebulon" },
-  { Icon: Box, name: "Prismify" },
-  { Icon: Star, name: "Nova Labs" },
-  { Icon: Feather, name: "Zephyr" },
-  { Icon: Sparkles, name: "Ignite" },
-];
-
-/**
- * A word with a directional neon glow: two white duplicates layered on top,
- * gradient-masked toward the top-right, one tight (blur-sm) and one wide
- * (blur-md) — so the glow bleeds out past the glyphs.
- */
-function GlowWord({ children }: { children: string }) {
-  const tightMask = "linear-gradient(to bottom left, white 25%, transparent 55%)";
-  const wideMask = "linear-gradient(to bottom left, white 20%, transparent 50%)";
+export default function Hero() {
   return (
-    <span className="relative inline-block overflow-visible">
-      {children}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 select-none blur-sm"
-        style={{ color: "hsl(0 0% 100%)", WebkitMaskImage: tightMask, maskImage: tightMask }}
-      >
-        {children}
-      </span>
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 select-none opacity-60 blur-md"
-        style={{ color: "hsl(0 0% 100%)", WebkitMaskImage: wideMask, maskImage: wideMask }}
-      >
-        {children}
-      </span>
-    </span>
+    <section className="relative overflow-hidden">
+      <div className="bg-grid absolute inset-0" aria-hidden />
+      <div className="glow-orb absolute -top-32 left-1/2 h-96 w-[44rem] -translate-x-1/2" aria-hidden />
+
+      <div className="relative mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-16 sm:px-6 md:grid-cols-[1.15fr_1fr] md:items-center md:pt-24">
+        <div className="animate-rise">
+          <div className="chip inline-flex items-center gap-2 border-signal/40 text-signal">
+            <span className="live-dot inline-block h-1.5 w-1.5 rounded-full bg-signal" />
+            LIVE ON POLYMARKET DATA · TOKEN ON PUMP.FUN
+          </div>
+
+          <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+            Claude reads the markets.
+            <br />
+            <span className="text-signal text-glow">You take the trade.</span>
+          </h1>
+
+          <p className="mt-5 max-w-xl text-lg text-dim">
+            {site.name} points Claude at Polymarket&apos;s biggest markets, has it estimate the
+            real odds, and surfaces the gaps — ranked by edge, explained in plain English.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <a
+              href="#picks"
+              className="rounded-full bg-signal px-6 py-3 font-bold text-[#04130c] transition-transform hover:scale-105"
+            >
+              View today&apos;s picks
+            </a>
+            <a
+              href={site.pumpFunUrl || "https://pump.fun"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-line px-6 py-3 font-bold text-ink transition-colors hover:border-signal/50 hover:text-signal"
+            >
+              Buy on pump.fun ↗
+            </a>
+          </div>
+
+          <div className="mt-6">
+            <CopyCA />
+          </div>
+
+          <p className="mt-6 max-w-xl text-xs text-dim/80">
+            AI estimates, not guarantees. Nothing here is financial advice — prediction markets
+            and memecoins can go to zero.
+          </p>
+        </div>
+
+        <TerminalCard />
+      </div>
+    </section>
   );
 }
 
-export function Hero() {
-  const { booting, restored, stats } = useChain();
-
+function TerminalCard() {
   return (
-    <section id="hero" className="relative flex min-h-screen w-full flex-col overflow-visible">
-      {/* Backdrop: animated aurora always present; the video fades in over it
-          when (and only when) it actually loads — a dead CDN can never leave
-          the hero black. */}
-      <div className="absolute inset-0 z-0">
-        <div className="aurora" />
-        <video
-          src={HERO_VIDEO}
-          autoPlay
-          muted
-          loop
-          playsInline
-          onCanPlay={(e) => {
-            e.currentTarget.style.opacity = "1";
-          }}
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
-          className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
+    <div className="card animate-rise p-1 font-mono text-[13px] leading-relaxed shadow-2xl shadow-black/60 [animation-delay:120ms]">
+      <div className="flex items-center gap-1.5 border-b border-line px-4 py-3">
+        <span className="h-2.5 w-2.5 rounded-full bg-blood/70" />
+        <span className="h-2.5 w-2.5 rounded-full bg-amber/70" />
+        <span className="h-2.5 w-2.5 rounded-full bg-signal/70" />
+        <span className="ml-3 text-xs text-dim">claude@predictions — edge-scan</span>
       </div>
-
-      <div className="relative z-10 flex min-h-screen flex-1 flex-col justify-between px-8 pb-10 pt-28 md:px-16">
-        {/* Heading + CTA, vertically centered */}
-        <div className="my-auto max-w-3xl overflow-visible">
-          <FadeUp>
-            <h1 className="mb-12 text-6xl leading-[0.95] tracking-tight text-foreground md:text-8xl lg:text-[7rem]">
-              Own the future of
-              <br />
-              your <GlowWord>assets.</GlowWord>
-            </h1>
-          </FadeUp>
-          <FadeUp delay={0.15}>
-            <GlowButton
-              onClick={() =>
-                document.getElementById("mining")?.scrollIntoView({ behavior: "smooth" })
-              }
-            >
-              Launch your orbit
-            </GlowButton>
-            <p className="mt-8 max-w-md text-lg text-foreground/50">
-              {booting
-                ? "Booting a real proof-of-work chain in your browser…"
-                : restored
-                  ? `Welcome back — your chain resumed at block #${stats?.height ?? 0}, right where you left it.`
-                  : `A real proof-of-work chain, mining live on this page — block #${stats?.height ?? 0} and saved in your browser.`}
-            </p>
-          </FadeUp>
-          <FadeUp delay={0.25}>
-            <div className="mt-6">
-              <TokenCA />
-            </div>
-          </FadeUp>
-        </div>
-
-        {/* Logo marquee pinned to the bottom of the hero */}
-        <div className="mt-auto w-full md:w-1/2">
-          <p className="mb-5 text-left text-base text-foreground/50">Trusted by top builders</p>
-          <div className="overflow-hidden">
-            <div className="flex w-max animate-marquee">
-              {[...builders, ...builders].map(({ Icon, name }, i) => (
-                <div key={i} className="mx-6 flex items-center gap-3">
-                  <Icon className="h-6 w-6 text-foreground/60" />
-                  <span className="whitespace-nowrap text-2xl tracking-wide text-foreground/60">
-                    {name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      <div className="space-y-1.5 px-4 py-4 text-dim">
+        <p>
+          <span className="text-signal">$</span> scan polymarket --order volume --binary
+        </p>
+        <p>↳ pulling top markets from gamma-api…</p>
+        <p>
+          ↳ <span className="text-ink">14 markets</span> pass liquidity + deadline filters
+        </p>
+        <p>
+          <span className="text-signal">$</span> claude analyze --calibrated --explain
+        </p>
+        <p>↳ estimating true odds vs market price…</p>
+        <p>
+          ↳ edge found: <span className="text-amber">market 8% / model 3%</span> → fade the
+          longshot
+        </p>
+        <p>
+          ↳ edge found: <span className="text-amber">market 61% / model 72%</span> → YES is
+          cheap
+        </p>
+        <p>
+          <span className="text-signal">$</span> publish board
+          <span className="animate-blink text-signal">▌</span>
+        </p>
       </div>
-    </section>
+    </div>
   );
 }

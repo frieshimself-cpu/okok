@@ -1,118 +1,57 @@
-import { useEffect, useState } from "react";
-import type { MouseEvent } from "react";
-import { MIcon } from "./MIcon";
-import { Sheet } from "./Sheet";
-import { GlowButton } from "./GlowButton";
+import { site } from "@/config/site";
 
-const navItems = [
-  { name: "About", href: "#about" },
-  { name: "Protocol", href: "#protocol" },
-  { name: "Mining", href: "#mining" },
-  { name: "Tokenomics", href: "#tokenomics" },
-  { name: "Console", href: "#console" },
+const links = [
+  { href: "#picks", label: "Picks" },
+  { href: "#how", label: "How it works" },
+  { href: "#token", label: "Token" },
+  { href: "#faq", label: "FAQ" },
 ];
 
-function smoothScroll(href: string) {
-  return (e: MouseEvent) => {
-    e.preventDefault();
-    document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
-  };
-}
-
-/** Stroke-based zigzag mark — twin valleys, like a "VV". */
-function Logo() {
+export default function Navbar() {
   return (
-    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden>
-      <path
-        d="M8 10L14 30L20 16L26 30L32 10"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <header className="sticky top-0 z-50 border-b border-line bg-night/80 backdrop-blur-md">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <a href="#" className="flex items-center gap-2 font-bold tracking-tight">
+          <LogoMark />
+          <span className="text-lg">
+            <span className="text-signal">$</span>PREDICTIONS
+          </span>
+        </a>
+
+        <div className="hidden items-center gap-7 text-sm text-dim md:flex">
+          {links.map((l) => (
+            <a key={l.href} href={l.href} className="transition-colors hover:text-ink">
+              {l.label}
+            </a>
+          ))}
+        </div>
+
+        <a
+          href={site.pumpFunUrl || "https://pump.fun"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full bg-signal px-4 py-2 text-sm font-bold text-[#04130c] transition-transform hover:scale-105"
+        >
+          Buy {site.name}
+        </a>
+      </nav>
+    </header>
   );
 }
 
-export function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
+function LogoMark() {
   return (
-    <nav
-      className={`fixed left-0 right-0 top-0 z-50 w-full transition-colors duration-300 ${
-        scrolled ? "border-b border-foreground/5 bg-background/70 backdrop-blur-xl" : "bg-transparent"
-      }`}
-    >
-      <div className="flex items-center justify-between px-8 py-6 md:px-16">
-        <div className="flex items-center gap-8">
-          <a
-            href="#hero"
-            onClick={smoothScroll("#hero")}
-            className="flex items-center gap-3 text-foreground"
-          >
-            <Logo />
-            <span className="text-2xl tracking-wide">Verdant</span>
-          </a>
-          <div className="hidden items-center gap-6 lg:flex">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                onClick={smoothScroll(item.href)}
-                className="text-base tracking-wide text-foreground transition-opacity hover:opacity-80"
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Open menu"
-          className="flex h-10 w-10 items-center justify-center text-foreground lg:hidden"
-        >
-          <MIcon name="menu" size={24} />
-        </button>
-      </div>
-
-      <Sheet open={menuOpen} onClose={() => setMenuOpen(false)}>
-        <div className="mt-10 flex flex-col gap-6">
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
-              onClick={(e) => {
-                smoothScroll(item.href)(e);
-                setMenuOpen(false);
-              }}
-              className="text-xl tracking-wide text-foreground/80 transition-colors hover:text-foreground"
-            >
-              {item.name}
-            </a>
-          ))}
-          <div className="mt-2 h-px bg-foreground/10" />
-          <GlowButton
-            className="w-full !text-lg"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById("mining")?.scrollIntoView({ behavior: "smooth" });
-              setMenuOpen(false);
-            }}
-          >
-            Launch your orbit
-          </GlowButton>
-        </div>
-      </Sheet>
-    </nav>
+    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden>
+      <rect width="64" height="64" rx="14" fill="#0b0f12" stroke="#1c272e" />
+      <path
+        d="M14 44 26 30l8 7 12-16"
+        stroke="#00ff9d"
+        strokeWidth="5"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="46" cy="21" r="5" fill="#00ff9d" />
+    </svg>
   );
 }
