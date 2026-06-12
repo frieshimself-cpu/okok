@@ -98,3 +98,45 @@ export async function fetchTopMarkets(limit: number): Promise<MarketSnapshot[]> 
   if (markets.length === 0) throw new Error("No eligible markets returned by Polymarket");
   return markets;
 }
+
+export interface LiveQuote {
+  id: string;
+  yesPrice: number;
+  volume24h: number;
+  liquidity: number;
+  closed: boolean;
+}
+
+/**
+ * Current prices for specific markets (used to re-price the baked snapshot on
+ * every load, so the board moves with the market even without an API key).
+ */
+export async function fetchQuotesByIds(ids: string[]): Promise<Map<string, LiveQuote>> {
+  const params = new URLSearchParams();
+  for (const id of ids) params.append("id", id);
+  const res = await fetch(`${GAMMA_MARKETS}?${params}`, {
+    cache: "no-store",
+    headers: { accept: "application/json" },
+  });
+  if (!res.ok) throw new Error(`Polymarket Gamma API responded ${res.status}`);
+  const raw = (await res.json()) as GammaMarket[];
+
+  const quotes = new Map<string, LiveQuote>();
+  for (const m of raw) {
+    let yesPrice: number;
+    try {
+      yesPrice = Number((JSON.parse(m.outcomePrices) as string[])[0]);
+    } catch {
+      continue;
+    }
+    if (!Number.isFinite(yesPrice)) continue;
+    quotes.set(m.id, {
+      id: m.id,
+      yesPrice,
+      volume24h: Number(m.volume24hr ?? 0),
+      liquidity: Number(m.liquidity ?? 0),
+      closed: m.closed || !m.active,
+    });
+  }
+  return quotes;
+}

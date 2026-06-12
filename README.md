@@ -32,8 +32,12 @@ cp .env.example .env.local   # add your ANTHROPIC_API_KEY
 npm run dev                  # http://localhost:3000
 ```
 
-No `ANTHROPIC_API_KEY`? The site runs in **demo mode** — clearly-labelled
-heuristic picks so you can build and deploy before wiring up the key.
+No `ANTHROPIC_API_KEY`? The board still ships full: it serves a **baked
+snapshot of genuine Claude analyses** (`src/data/snapshot.ts`), re-priced
+against live Polymarket quotes on every load — prices, edges and volumes keep
+moving, resolved markets drop off automatically, and it costs zero API spend.
+Add the key whenever you want fresh analyses; the live engine takes over
+automatically.
 
 ## Configuration
 
@@ -62,8 +66,12 @@ pick quality for ~5× lower spend.
 
 ## Honesty notes
 
-- Demo-mode picks are labelled as heuristics in the payload (`engine: "demo"`),
-  in a banner, and inside every rationale — they are never presented as Claude.
+- The no-key snapshot contains real Claude analyses (structural reads on
+  resolution wording, deadline math, cross-market consistency) — not invented
+  numbers — and the prices shown next to them are always live.
+- If both the live engine and the snapshot fail, heuristic picks are labelled
+  as heuristics in the payload (`engine: "demo"`), in a banner, and inside
+  every rationale — they are never presented as Claude.
 - The model is prompted to stay humble about its training cutoff and to PASS on
   news-driven markets; every pick carries a risk note.
 - The site states throughout that nothing here is financial advice and that the
