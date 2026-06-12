@@ -27,8 +27,8 @@ export default function TokenSection() {
                 for everyone
               </li>
               <li className="flex gap-3">
-                <span className="text-signal">▸</span> CA will be posted here and on our socials —
-                trust nothing else; impersonators will front-run the launch
+                <span className="text-signal">▸</span> The only official CA is the one on this
+                page — verify before you buy; copycats clone launches like this
               </li>
             </ul>
           </div>
