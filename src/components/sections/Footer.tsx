@@ -1,4 +1,5 @@
 import { MIcon } from "../MIcon";
+import { PUMP_FUN_URL } from "../TokenCA";
 
 export function Footer() {
   return (
@@ -12,6 +13,14 @@ export function Footer() {
           </span>
         </div>
         <div className="flex items-center gap-6 font-inter text-sm text-landing-text-muted">
+          <a
+            className="transition-colors hover:text-foreground"
+            href={PUMP_FUN_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            pump.fun ↗
+          </a>
           <a
             className="transition-colors hover:text-foreground"
             href="https://github.com/frieshimself-cpu/okok"

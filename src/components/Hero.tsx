@@ -1,6 +1,7 @@
 import { Box, Feather, Sparkles, Star, Sun } from "lucide-react";
 import { FadeUp } from "./FadeUp";
 import { GlowButton } from "./GlowButton";
+import { TokenCA } from "./TokenCA";
 import { useChain } from "../context/ChainContext";
 
 const HERO_VIDEO =
@@ -95,6 +96,11 @@ export function Hero() {
                   ? `Welcome back — your chain resumed at block #${stats?.height ?? 0}, right where you left it.`
                   : `A real proof-of-work chain, mining live on this page — block #${stats?.height ?? 0} and saved in your browser.`}
             </p>
+          </FadeUp>
+          <FadeUp delay={0.25}>
+            <div className="mt-6">
+              <TokenCA />
+            </div>
           </FadeUp>
         </div>
 

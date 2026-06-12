@@ -1,5 +1,6 @@
 import { FadeUp } from "../FadeUp";
 import { Section } from "./Section";
+import { TokenCA } from "../TokenCA";
 import { blockRewardAt } from "../../chain";
 import { PAGE_CHAIN_CONFIG } from "../../context/ChainContext";
 
@@ -76,6 +77,19 @@ export function Tokenomics() {
           </dl>
         </FadeUp>
       </div>
+
+      <FadeUp delay={0.15}>
+        <div className="liquid-glass mt-10 flex flex-col items-start justify-between gap-5 rounded-2xl p-6 sm:flex-row sm:items-center">
+          <div>
+            <p className="text-2xl text-foreground">Looking for the tradable coin?</p>
+            <p className="mt-1 max-w-[520px] font-inter text-sm leading-relaxed text-landing-text-muted">
+              The Verdant memecoin lives on Solana via pump.fun — a community token, separate from
+              the LEAF demo chain mining on this page. No utility claims, do your own research.
+            </p>
+          </div>
+          <TokenCA className="w-full shrink-0 sm:w-auto sm:max-w-[460px]" />
+        </div>
+      </FadeUp>
     </Section>
   );
 }
