@@ -37,7 +37,7 @@ export function Sheet({
           <motion.aside
             role="dialog"
             aria-modal="true"
-            className="fixed bottom-0 right-0 top-0 z-[70] w-[300px] border-l border-white/10 bg-[#0c0518]/95 p-6 backdrop-blur-2xl"
+            className="fixed bottom-0 right-0 top-0 z-[70] w-[300px] border-l border-foreground/10 bg-background/95 p-6 backdrop-blur-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}

@@ -6,10 +6,15 @@ export default {
     extend: {
       fontFamily: {
         inter: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["'Instrument Serif'", "Georgia", "serif"],
       },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "hsl(var(--background) / <alpha-value>)",
+        foreground: "hsl(var(--foreground) / <alpha-value>)",
+        accent: {
+          DEFAULT: "hsl(var(--accent) / <alpha-value>)",
+          foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
+        },
         landing: {
           surface: "rgba(255,255,255,0.10)",
           "surface-hover": "rgba(255,255,255,0.16)",

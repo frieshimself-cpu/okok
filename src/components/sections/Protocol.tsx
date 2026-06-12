@@ -38,13 +38,13 @@ export function Protocol() {
         {features.map((feature, i) => (
           <FadeUp key={feature.title} delay={i * 0.08}>
             <div className="liquid-glass h-full rounded-2xl p-6">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-300/90">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/10 text-accent">
                 <MIcon name={feature.icon} size={18} />
               </div>
-              <h3 className="mt-4 text-lg font-medium tracking-tight text-foreground">
-                {feature.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-landing-text-muted">{feature.body}</p>
+              <h3 className="mt-4 text-2xl tracking-tight text-foreground">{feature.title}</h3>
+              <p className="mt-2 font-inter text-sm leading-relaxed text-landing-text-muted">
+                {feature.body}
+              </p>
             </div>
           </FadeUp>
         ))}

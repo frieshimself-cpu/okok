@@ -1,8 +1,9 @@
 /**
- * One Verdant node for the whole page. Boots on mount (mints two wallets,
- * mines the first blocks), then exposes the chain's live state plus actions —
- * mining with progress, signed transfers, audits, and the chat prompt
- * interface. All operations are serialized through a queue so the chat panel
+ * One Verdant node for the whole page. On mount it restores the chain and
+ * wallets from localStorage (fully revalidating from genesis — corrupted
+ * storage is discarded, not trusted) or boots fresh by mining the first
+ * blocks. Every successful operation persists, so the chain survives
+ * reloads. All operations are serialized through a queue so the chat panel
  * and the mining lab can never race each other.
  */
 
@@ -17,6 +18,7 @@ import {
   type ChainConfig,
   type MineOptions,
   type MineResult,
+  type WalletExport,
 } from "../chain";
 
 /** The exact consensus parameters the in-page node runs. */
@@ -33,6 +35,16 @@ export const PAGE_CHAIN_CONFIG: ChainConfig = {
 
 /** Yield to the event loop every N hashes so mining never janks the page. */
 const YIELD_EVERY = 2_500;
+
+const STORAGE_KEY = "verdant:state:v1";
+
+interface PersistedState {
+  version: 1;
+  chain: Block[];
+  wallet: WalletExport;
+  peer: WalletExport;
+  savedAt: number;
+}
 
 export interface ChainStats {
   height: number;
@@ -55,6 +67,8 @@ export interface MiningProgress {
 interface ChainContextValue {
   booting: boolean;
   mining: boolean;
+  /** True when this session resumed a chain saved by a previous visit. */
+  restored: boolean;
   progress: MiningProgress | null;
   blocks: Block[];
   stats: ChainStats | null;
@@ -62,6 +76,7 @@ interface ChainContextValue {
   sendTransfer: () => Promise<string>;
   audit: () => Promise<{ valid: boolean; error?: string }>;
   handlePrompt: (text: string) => Promise<string>;
+  resetChain: () => Promise<void>;
 }
 
 const ChainContext = createContext<ChainContextValue | null>(null);
@@ -77,6 +92,8 @@ interface ChainEnv {
   chain: Blockchain;
   wallet: Wallet;
   peer: Wallet;
+  walletExport: WalletExport;
+  peerExport: WalletExport;
 }
 
 const fmtHash = (hash: string) => `${hash.slice(0, 10)}…`;
@@ -85,6 +102,7 @@ const fmtSecs = (ms: number) => `${(ms / 1000).toFixed(2)}s`;
 export function ChainProvider({ children }: { children: ReactNode }) {
   const [booting, setBooting] = useState(true);
   const [mining, setMining] = useState(false);
+  const [restored, setRestored] = useState(false);
   const [progress, setProgress] = useState<MiningProgress | null>(null);
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [stats, setStats] = useState<ChainStats | null>(null);
@@ -93,6 +111,24 @@ export function ChainProvider({ children }: { children: ReactNode }) {
   const queueRef = useRef<Promise<unknown>>(Promise.resolve());
   const startedRef = useRef(false);
   const lastProgressPaintRef = useRef(0);
+
+  const persist = useCallback(() => {
+    const env = envRef.current;
+    if (!env) return;
+    const payload: PersistedState = {
+      version: 1,
+      chain: env.chain.chain,
+      wallet: env.walletExport,
+      peer: env.peerExport,
+      savedAt: Date.now(),
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      // Quota exceeded or storage unavailable (private mode) — the chain
+      // still works for this session, it just won't survive a reload.
+    }
+  }, []);
 
   const refresh = useCallback(() => {
     const env = envRef.current;
@@ -111,7 +147,8 @@ export function ChainProvider({ children }: { children: ReactNode }) {
       peerAddress: peer.address,
       peerBalance: chain.getBalance(peer.address),
     });
-  }, []);
+    persist();
+  }, [persist]);
 
   const mineOptions = useCallback(
     (): MineOptions => ({
@@ -128,6 +165,81 @@ export function ChainProvider({ children }: { children: ReactNode }) {
     }),
     [],
   );
+
+  /** Try to resume a previous session; returns false when there is nothing usable. */
+  const tryRestore = useCallback(async (): Promise<boolean> => {
+    let raw: string | null = null;
+    try {
+      raw = localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return false;
+    }
+    if (!raw) return false;
+
+    try {
+      const data = JSON.parse(raw) as PersistedState;
+      if (data.version !== 1) throw new Error("unknown storage version");
+      const wallet = await Wallet.restore(data.wallet);
+      const peer = await Wallet.restore(data.peer);
+      // fromChain revalidates every block from genesis — tampered or
+      // corrupted storage fails here and we fall back to a fresh boot.
+      const chain = await Blockchain.fromChain(data.chain, PAGE_CHAIN_CONFIG);
+      envRef.current = {
+        chain,
+        wallet,
+        peer,
+        walletExport: data.wallet,
+        peerExport: data.peer,
+      };
+      return true;
+    } catch (err) {
+      console.warn("verdant: discarding unusable saved state", err);
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        /* ignore */
+      }
+      return false;
+    }
+  }, []);
+
+  const freshBoot = useCallback(async () => {
+    const chain = new Blockchain(PAGE_CHAIN_CONFIG);
+    const wallet = await Wallet.create();
+    const peer = await Wallet.create();
+    envRef.current = {
+      chain,
+      wallet,
+      peer,
+      walletExport: await wallet.export(),
+      peerExport: await peer.export(),
+    };
+    refresh();
+
+    await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
+    refresh();
+    await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
+    refresh();
+    const tx = await wallet.createTransaction(peer.address, 5, 1, chain.getPendingNonce(wallet.address));
+    await chain.addTransaction(tx);
+    await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
+    refresh();
+  }, [refresh]);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+
+    (async () => {
+      if (await tryRestore()) {
+        setRestored(true);
+        refresh();
+      } else {
+        await freshBoot();
+      }
+      setBooting(false);
+    })().catch((err) => console.error("verdant boot failed", err));
+  }, [freshBoot, refresh, tryRestore]);
 
   /** Mine one block for the page wallet. Not queued — wrap with enqueue(). */
   const rawMine = useCallback(async (): Promise<MineResult | null> => {
@@ -179,39 +291,29 @@ export function ChainProvider({ children }: { children: ReactNode }) {
     return next;
   }, []);
 
-  useEffect(() => {
-    if (startedRef.current) return;
-    startedRef.current = true;
-    let cancelled = false;
-
-    (async () => {
-      const chain = new Blockchain(PAGE_CHAIN_CONFIG);
-      const wallet = await Wallet.create();
-      const peer = await Wallet.create();
-      envRef.current = { chain, wallet, peer };
-      refresh();
-
-      await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
-      refresh();
-      await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
-      refresh();
-      const tx = await wallet.createTransaction(peer.address, 5, 1, chain.getPendingNonce(wallet.address));
-      await chain.addTransaction(tx);
-      await chain.mineBlock(wallet.address, { yieldEvery: YIELD_EVERY });
-
-      if (cancelled) return;
-      refresh();
-      setBooting(false);
-    })().catch((err) => console.error("verdant boot failed", err));
-
-    return () => {
-      cancelled = true;
-    };
-  }, [refresh]);
-
   const mineOne = useCallback(() => enqueue(rawMine), [enqueue, rawMine]);
   const sendTransfer = useCallback(() => enqueue(rawSend), [enqueue, rawSend]);
   const audit = useCallback(() => enqueue(rawAudit), [enqueue, rawAudit]);
+
+  /** Wipe storage and grow a brand-new chain from genesis. */
+  const resetChain = useCallback(
+    () =>
+      enqueue(async () => {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch {
+          /* ignore */
+        }
+        envRef.current = null;
+        setRestored(false);
+        setBooting(true);
+        setBlocks([]);
+        setStats(null);
+        await freshBoot();
+        setBooting(false);
+      }),
+    [enqueue, freshBoot],
+  );
 
   const handlePrompt = useCallback(
     (text: string): Promise<string> =>
@@ -257,7 +359,19 @@ export function ChainProvider({ children }: { children: ReactNode }) {
 
   return (
     <ChainContext.Provider
-      value={{ booting, mining, progress, blocks, stats, mineOne, sendTransfer, audit, handlePrompt }}
+      value={{
+        booting,
+        mining,
+        restored,
+        progress,
+        blocks,
+        stats,
+        mineOne,
+        sendTransfer,
+        audit,
+        handlePrompt,
+        resetChain,
+      }}
     >
       {children}
     </ChainContext.Provider>

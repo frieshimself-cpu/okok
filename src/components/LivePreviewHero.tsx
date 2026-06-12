@@ -83,7 +83,7 @@ export function LivePreviewHero() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(80% 60% at 70% 8%, rgba(124,58,237,0.30), transparent 60%), radial-gradient(70% 55% at 18% 92%, rgba(16,185,129,0.22), transparent 60%), #050208",
+            "radial-gradient(80% 60% at 70% 8%, hsl(45 60% 45% / 0.25), transparent 60%), radial-gradient(70% 55% at 18% 92%, hsl(160 55% 28% / 0.35), transparent 60%), #060a08",
         }}
       />
       <video

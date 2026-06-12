@@ -10,6 +10,13 @@ to a real node booted on page load — **every message you send mines an actual
 block** and replies with the receipt (hash, difficulty, attempts, reward,
 post-block audit).
 
+**The chain persists.** Blocks, wallets and balances are saved to
+`localStorage` after every operation and restored on the next visit — with the
+entire chain revalidated from genesis first, so corrupted or hand-edited
+storage is discarded rather than trusted. Reload the page and you resume at
+the same height with the same balance; the "Reset chain & wallet" control in
+the mining lab starts a fresh genesis era on purpose.
+
 ## Quickstart
 
 ```bash
@@ -52,28 +59,31 @@ fork choice. Run `npm run demo` to watch all of it happen in a terminal.
 
 ## The website
 
-React + Vite + TypeScript + Tailwind + framer-motion + lucide-react. One page,
-five sections, every control wired to the real node:
+React + Vite + TypeScript + Tailwind + framer-motion + lucide-react. A dark,
+cinematic single page set in **Instrument Serif** on a deep green-black
+palette (`hsl(150 20% 5%)`) with warm amber accents (`hsl(45 70% 75%)`):
 
-- **Hero** — full-bleed background video over an animated aurora fallback (if
-  the remote video can't load, the page stays cinematic instead of going
-  black), scroll-linked parallax (copy fades and rises `-60%`, the
-  liquid-glass dashboard drifts up `-25%`, the foreground grass drifts down
-  `+20%`), and a live badge showing the chain's current height.
-- **Console** — the dashboard mock holds the Verdant console (chat) and a
-  miniature site preview with a JS-managed fade-in/out video loop. Every chat
-  message mines a real block; on phones the console stacks below the preview.
+- **Hero** — full-screen background video over an animated aurora fallback
+  (a dead CDN can never leave the page black), a 7rem serif headline with a
+  directional neon glow on "assets.", an amber GlowButton with a gold halo,
+  a live block-height status line, and an infinite "Trusted by top builders"
+  logo marquee pinned to the bottom.
+- **Console** — the liquid-glass dashboard holds the Verdant console (chat)
+  and a miniature site preview with a JS-managed fade-in/out video loop.
+  Every chat message mines a real block; on phones the console stacks below
+  the preview.
 - **About** — live stat tiles (height, supply, cumulative work, difficulty).
 - **Protocol** — the four consensus rules, explained.
 - **Mining** — a live block explorer plus wallet card and buttons to mine
-  (with hashes/sec progress), send a signed transfer, and audit from genesis.
+  (with hashes/sec progress), send a signed transfer, audit from genesis,
+  and reset the persisted chain.
 - **Tokenomics** — the emission curve and consensus parameters, computed from
   the very config the page runs.
 
-A single `ChainProvider` hosts the node, so the hero badge, console, explorer
-and stat tiles all reflect the same chain. Z-stack: video `z-0` → dashboard
-`z-10` → hero copy `z-20` → grass `z-30` → navbar `z-50`. Fonts: Inter for
-UI, Instrument Serif inside the preview.
+A single `ChainProvider` hosts the node — and persists it — so the hero
+status line, console, explorer and stat tiles all reflect the same chain
+across visits. Serif for display and prose; Inter for dense data UI; mono
+for hashes.
 
 ## Deploy
 

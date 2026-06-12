@@ -35,7 +35,7 @@ export function Tokenomics() {
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
         <FadeUp>
-          <div className="liquid-glass rounded-2xl p-6">
+          <div className="liquid-glass rounded-2xl p-6 font-inter">
             <p className="text-[11px] uppercase tracking-wider text-white/40">
               Block reward per emission era
             </p>
@@ -45,9 +45,9 @@ export function Tokenomics() {
                   key={era}
                   className="flex h-full flex-1 flex-col items-center justify-end gap-2"
                 >
-                  <span className="text-[11px] tabular-nums text-emerald-200/80">{reward}</span>
+                  <span className="text-[11px] tabular-nums text-accent/90">{reward}</span>
                   <div
-                    className="w-full rounded-t-lg border border-emerald-300/20 bg-gradient-to-t from-emerald-500/15 to-emerald-300/50"
+                    className="w-full rounded-t-lg border border-accent/20 bg-gradient-to-t from-accent/15 to-accent/50"
                     style={{ height: `${Math.max(5, (reward / eras[0]) * 78)}%` }}
                   />
                   <span className="text-[10px] uppercase tracking-wide text-white/30">
@@ -64,7 +64,7 @@ export function Tokenomics() {
         </FadeUp>
 
         <FadeUp delay={0.1}>
-          <dl className="liquid-glass divide-y divide-white/5 rounded-2xl px-6 py-2">
+          <dl className="liquid-glass divide-y divide-white/5 rounded-2xl px-6 py-2 font-inter">
             {parameters.map((parameter) => (
               <div key={parameter.label} className="flex items-baseline justify-between gap-4 py-3.5">
                 <dt className="text-sm text-landing-text-muted">{parameter.label}</dt>

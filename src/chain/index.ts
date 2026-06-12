@@ -8,7 +8,13 @@ export {
   verifyTransaction,
   type Transaction,
 } from "./transaction";
-export { ADDRESS_PREFIX, addressFromPublicKey, shortAddress, Wallet } from "./wallet";
+export {
+  ADDRESS_PREFIX,
+  addressFromPublicKey,
+  shortAddress,
+  Wallet,
+  type WalletExport,
+} from "./wallet";
 export {
   computeBlockHash,
   headerPayload,

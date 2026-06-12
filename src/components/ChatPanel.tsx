@@ -62,7 +62,7 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
 
   return (
     <div
-      className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10"
+      className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 font-inter"
       style={{
         background: "rgba(8,8,10,0.6)",
         backdropFilter: "blur(24px)",
@@ -79,7 +79,7 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
         </div>
         <span className="ml-auto flex items-center gap-1.5 text-[10px] tabular-nums text-white/40">
           <span
-            className={`h-1.5 w-1.5 rounded-full ${booting ? "animate-pulse bg-amber-300/80" : "bg-emerald-400/80"}`}
+            className={`h-1.5 w-1.5 rounded-full ${booting ? "animate-pulse bg-white/30" : "bg-accent"}`}
           />
           {booting ? "booting" : `block #${stats?.height ?? 0}`}
         </span>

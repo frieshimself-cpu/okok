@@ -380,4 +380,18 @@ export class Blockchain {
     }
     return { valid: true, state };
   }
+
+  /**
+   * Rebuild a node from a serialized chain (e.g. persisted to localStorage).
+   * The chain is fully revalidated from genesis — corrupted or tampered
+   * storage is rejected rather than trusted.
+   */
+  static async fromChain(chain: Block[], config: Partial<ChainConfig> = {}): Promise<Blockchain> {
+    const node = new Blockchain(config);
+    const result = await Blockchain.validateChain(chain, node.config);
+    if (!result.valid) throw new Error(`cannot restore chain: ${result.error}`);
+    node.chain = [...chain];
+    node.state = result.state;
+    return node;
+  }
 }

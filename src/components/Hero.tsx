@@ -1,37 +1,56 @@
-import { useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { Box, Feather, Sparkles, Star, Sun } from "lucide-react";
 import { FadeUp } from "./FadeUp";
-import { HeroBadge, PrimaryButton, SecondaryButton } from "./Buttons";
-import { DashboardMock } from "./DashboardMock";
+import { GlowButton } from "./GlowButton";
 import { useChain } from "../context/ChainContext";
 
 const HERO_VIDEO =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260521_014404_fadafdb1-4df6-4699-be9c-77d25f39a3d0.mp4";
-const GRASS_IMG =
-  "https://miptxtnhvjrkpmnjgdhk.supabase.co/storage/v1/object/public/training-assets/landing%2Fhero-bottom-bg.png";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260325_094440_a3592600-bd1e-49e5-9bce-a73662061d83.mp4";
 
-const scrollToId = (id: string) => () =>
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+const builders = [
+  { Icon: Sun, name: "Nebulon" },
+  { Icon: Box, name: "Prismify" },
+  { Icon: Star, name: "Nova Labs" },
+  { Icon: Feather, name: "Zephyr" },
+  { Icon: Sparkles, name: "Ignite" },
+];
+
+/**
+ * A word with a directional neon glow: two white duplicates layered on top,
+ * gradient-masked toward the top-right, one tight (blur-sm) and one wide
+ * (blur-md) — so the glow bleeds out past the glyphs.
+ */
+function GlowWord({ children }: { children: string }) {
+  const tightMask = "linear-gradient(to bottom left, white 25%, transparent 55%)";
+  const wideMask = "linear-gradient(to bottom left, white 20%, transparent 50%)";
+  return (
+    <span className="relative inline-block overflow-visible">
+      {children}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 select-none blur-sm"
+        style={{ color: "hsl(0 0% 100%)", WebkitMaskImage: tightMask, maskImage: tightMask }}
+      >
+        {children}
+      </span>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 select-none opacity-60 blur-md"
+        style={{ color: "hsl(0 0% 100%)", WebkitMaskImage: wideMask, maskImage: wideMask }}
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
 
 export function Hero() {
-  const { booting, stats } = useChain();
-  const sectionRef = useRef<HTMLElement>(null);
-  const [grassVisible, setGrassVisible] = useState(true);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const dashboardY = useTransform(scrollYProgress, [0, 1], ["0%", "-25%"]);
-  const grassY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "-60%"]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const { booting, restored, stats } = useChain();
 
   return (
-    <section ref={sectionRef} id="hero" className="relative w-full min-h-screen">
-      {/* 1) Backdrop: animated aurora always present; the video fades in over
-            it when (and only when) it actually loads — so a dead CDN can
-            never leave the hero black. */}
+    <section id="hero" className="relative flex min-h-screen w-full flex-col overflow-visible">
+      {/* Backdrop: animated aurora always present; the video fades in over it
+          when (and only when) it actually loads — a dead CDN can never leave
+          the hero black. */}
       <div className="absolute inset-0 z-0">
         <div className="aurora" />
         <video
@@ -48,74 +67,54 @@ export function Hero() {
           }}
           className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-1000"
         />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
       </div>
 
-      {/* 2) Centered copy + CTA, fading and rising away on scroll */}
-      <motion.div
-        style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-20 flex flex-col items-center text-center px-4 sm:px-6 pt-28 sm:pt-36 md:pt-44 max-w-[980px] mx-auto"
-      >
-        <FadeUp delay={0}>
-          <HeroBadge>
-            <span className="flex items-center gap-2">
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  booting ? "animate-pulse bg-amber-300/80" : "bg-emerald-400/90"
-                }`}
-              />
-              {booting
-                ? "Booting the chain in your browser…"
-                : `Live — block #${stats?.height ?? 0} mined in your browser`}
-            </span>
-          </HeroBadge>
-        </FadeUp>
-        <FadeUp delay={0.1}>
-          <h1 className="mt-8 text-foreground text-[38px] sm:text-[52px] md:text-[64px] leading-[1.05] tracking-[-0.03em] max-w-[960px]">
-            An entire blockchain, alive in your browser
-          </h1>
-        </FadeUp>
-        <FadeUp delay={0.2}>
-          <p className="mt-6 text-landing-text text-base sm:text-lg leading-[1.5] max-w-[520px]">
-            Mint a wallet, sign transactions and mine real blocks — a complete proof-of-work chain
-            with no servers behind it
-          </p>
-        </FadeUp>
-        <FadeUp delay={0.3} className="mt-10">
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <PrimaryButton as="button" onClick={scrollToId("mining")}>
-              Start mining
-            </PrimaryButton>
-            <SecondaryButton
-              size="md"
-              href="#console"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToId("console")();
-              }}
+      <div className="relative z-10 flex min-h-screen flex-1 flex-col justify-between px-8 pb-10 pt-28 md:px-16">
+        {/* Heading + CTA, vertically centered */}
+        <div className="my-auto max-w-3xl overflow-visible">
+          <FadeUp>
+            <h1 className="mb-12 text-6xl leading-[0.95] tracking-tight text-foreground md:text-8xl lg:text-[7rem]">
+              Own the future of
+              <br />
+              your <GlowWord>assets.</GlowWord>
+            </h1>
+          </FadeUp>
+          <FadeUp delay={0.15}>
+            <GlowButton
+              onClick={() =>
+                document.getElementById("mining")?.scrollIntoView({ behavior: "smooth" })
+              }
             >
-              Open the console
-            </SecondaryButton>
+              Launch your orbit
+            </GlowButton>
+            <p className="mt-8 max-w-md text-lg text-foreground/50">
+              {booting
+                ? "Booting a real proof-of-work chain in your browser…"
+                : restored
+                  ? `Welcome back — your chain resumed at block #${stats?.height ?? 0}, right where you left it.`
+                  : `A real proof-of-work chain, mining live on this page — block #${stats?.height ?? 0} and saved in your browser.`}
+            </p>
+          </FadeUp>
+        </div>
+
+        {/* Logo marquee pinned to the bottom of the hero */}
+        <div className="mt-auto w-full md:w-1/2">
+          <p className="mb-5 text-left text-base text-foreground/50">Trusted by top builders</p>
+          <div className="overflow-hidden">
+            <div className="flex w-max animate-marquee">
+              {[...builders, ...builders].map(({ Icon, name }, i) => (
+                <div key={i} className="mx-6 flex items-center gap-3">
+                  <Icon className="h-6 w-6 text-foreground/60" />
+                  <span className="whitespace-nowrap text-2xl tracking-wide text-foreground/60">
+                    {name}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-        </FadeUp>
-      </motion.div>
-
-      {/* 3) Dashboard mock — slower parallax */}
-      <motion.div style={{ y: dashboardY }} className="relative z-10 mt-8 sm:mt-10 md:mt-12 px-4 sm:px-6">
-        <DashboardMock />
-      </motion.div>
-
-      {/* 4) Foreground grass — in front of the dashboard, drifting down.
-            Purely decorative: if the remote image dies, it simply disappears. */}
-      {grassVisible && (
-        <motion.img
-          src={GRASS_IMG}
-          alt=""
-          aria-hidden
-          onError={() => setGrassVisible(false)}
-          style={{ y: grassY }}
-          className="pointer-events-none select-none absolute left-0 right-0 bottom-[-40px] sm:bottom-[-100px] lg:bottom-[-220px] w-full z-30 object-cover"
-        />
-      )}
+        </div>
+      </div>
     </section>
   );
 }

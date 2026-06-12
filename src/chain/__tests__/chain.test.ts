@@ -94,6 +94,16 @@ describe("wallets and signatures", () => {
     expect(verdict.ok).toBe(false);
     expect(verdict.error).toMatch(/does not match sender address/);
   });
+
+  it("round-trips a wallet through export/restore", async () => {
+    const original = await Wallet.create();
+    const restored = await Wallet.restore(JSON.parse(JSON.stringify(await original.export())));
+    expect(restored.address).toBe(original.address);
+
+    const peer = await Wallet.create();
+    const tx = await restored.createTransaction(peer.address, 3, 1, 0);
+    expect((await verifyTransaction(tx)).ok).toBe(true);
+  });
 });
 
 describe("proof-of-work mining", () => {
@@ -263,6 +273,31 @@ describe("the blockchain", () => {
     const block: Block = { ...mined.header, transactions, hash: mined.hash };
 
     await expect(node.receiveBlock(block)).rejects.toThrow(/coinbase pays/);
+  });
+
+  it("restores a node from a serialized chain and keeps mining", async () => {
+    const node = new Blockchain(CFG);
+    const miner = await Wallet.create();
+    const alice = await Wallet.create();
+    await node.mineBlock(miner.address);
+    await node.addTransaction(await miner.createTransaction(alice.address, 10, 1, 0));
+    await node.mineBlock(miner.address);
+
+    // Simulate a page reload: serialize, parse, rebuild.
+    const revived = await Blockchain.fromChain(JSON.parse(JSON.stringify(node.chain)), CFG);
+    expect(revived.height).toBe(node.height);
+    expect(revived.getBalance(miner.address)).toBe(node.getBalance(miner.address));
+    expect(revived.getBalance(alice.address)).toBe(10);
+    expect(revived.getNonce(miner.address)).toBe(1);
+
+    // The revived node keeps working: it can mine and stays valid.
+    await revived.mineBlock(miner.address);
+    expect((await revived.audit()).valid).toBe(true);
+
+    // Tampered storage is rejected, not trusted.
+    const corrupted = JSON.parse(JSON.stringify(node.chain));
+    corrupted[2].transactions[1].amount = 9_999;
+    await expect(Blockchain.fromChain(corrupted, CFG)).rejects.toThrow(/cannot restore/);
   });
 
   it("adopts a heavier competing chain and refuses a lighter one", async () => {

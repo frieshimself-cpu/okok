@@ -21,10 +21,10 @@ export function Section({
     <section id={id} className={`relative scroll-mt-24 ${className}`}>
       <div className="mx-auto max-w-[1080px] px-6">
         <FadeUp>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-emerald-300/70">
+          <p className="font-inter text-xs font-semibold uppercase tracking-[0.25em] text-accent/80">
             {eyebrow}
           </p>
-          <h2 className="mt-3 max-w-[680px] text-3xl tracking-[-0.02em] text-foreground sm:text-4xl">
+          <h2 className="mt-3 max-w-[680px] text-4xl tracking-tight text-foreground sm:text-5xl">
             {title}
           </h2>
           {intro && (

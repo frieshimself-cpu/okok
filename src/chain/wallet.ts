@@ -12,6 +12,12 @@ const subtle = globalThis.crypto.subtle;
 
 export const ADDRESS_PREFIX = "leaf";
 
+/** Serializable wallet material — what gets persisted to localStorage. */
+export interface WalletExport {
+  privateKeyJwk: JsonWebKey;
+  publicKeyHex: string;
+}
+
 export function addressFromPublicKey(publicKeyHex: string): string {
   return ADDRESS_PREFIX + bytesToHex(sha256Bytes(hexToBytes(publicKeyHex))).slice(0, 40);
 }
@@ -35,6 +41,26 @@ export class Wallet {
     const spki = new Uint8Array(await subtle.exportKey("spki", pair.publicKey));
     const publicKeyHex = bytesToHex(spki);
     return new Wallet(pair.privateKey, publicKeyHex, addressFromPublicKey(publicKeyHex));
+  }
+
+  /** Serialize the key pair so the wallet can survive a page reload. */
+  async export(): Promise<WalletExport> {
+    return {
+      privateKeyJwk: await subtle.exportKey("jwk", this.privateKey),
+      publicKeyHex: this.publicKeyHex,
+    };
+  }
+
+  /** Rebuild a wallet from persisted material. */
+  static async restore(data: WalletExport): Promise<Wallet> {
+    const privateKey = await subtle.importKey(
+      "jwk",
+      data.privateKeyJwk,
+      { name: "ECDSA", namedCurve: "P-256" },
+      true,
+      ["sign"],
+    );
+    return new Wallet(privateKey, data.publicKeyHex, addressFromPublicKey(data.publicKeyHex));
   }
 
   /** Build and sign a transfer. The caller supplies the account's next nonce. */

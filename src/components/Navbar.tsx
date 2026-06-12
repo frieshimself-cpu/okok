@@ -1,29 +1,37 @@
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { MouseEvent } from "react";
-import { AnimatedText } from "./AnimatedText";
-import { SecondaryButton } from "./Buttons";
 import { MIcon } from "./MIcon";
 import { Sheet } from "./Sheet";
+import { GlowButton } from "./GlowButton";
 
 const navItems = [
   { name: "About", href: "#about" },
   { name: "Protocol", href: "#protocol" },
   { name: "Mining", href: "#mining" },
   { name: "Tokenomics", href: "#tokenomics" },
+  { name: "Console", href: "#console" },
 ];
-
-const hoverDriver = {
-  initial: "rest" as const,
-  whileHover: "hover" as const,
-  animate: "rest" as const,
-};
 
 function smoothScroll(href: string) {
   return (e: MouseEvent) => {
     e.preventDefault();
     document.getElementById(href.replace("#", ""))?.scrollIntoView({ behavior: "smooth" });
   };
+}
+
+/** Stroke-based zigzag mark — twin valleys, like a "VV". */
+function Logo() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden>
+      <path
+        d="M8 10L14 30L20 16L26 30L32 10"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export function Navbar() {
@@ -39,46 +47,32 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 w-full transition-colors duration-300 ${
-        scrolled ? "bg-[#08020e]/70 backdrop-blur-xl border-b border-white/5" : "bg-transparent"
+      className={`fixed left-0 right-0 top-0 z-50 w-full transition-colors duration-300 ${
+        scrolled ? "border-b border-foreground/5 bg-background/70 backdrop-blur-xl" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-[1080px] items-center justify-between px-6 lg:px-0">
-        <a
-          href="#hero"
-          onClick={smoothScroll("#hero")}
-          className="flex items-center gap-2 text-foreground"
-        >
-          <MIcon name="eco" size={20} />
-          <span className="text-base font-semibold tracking-tight">Verdant</span>
-        </a>
-
-        <div className="hidden items-center gap-8 lg:flex">
-          {navItems.map((item) => (
-            <motion.a
-              key={item.name}
-              href={item.href}
-              onClick={smoothScroll(item.href)}
-              {...hoverDriver}
-              className="text-sm text-landing-text hover:text-foreground transition-colors"
-            >
-              <AnimatedText>{item.name}</AnimatedText>
-            </motion.a>
-          ))}
-        </div>
-
-        <div className="hidden items-center gap-5 lg:flex">
-          <motion.a
-            href="#console"
-            onClick={smoothScroll("#console")}
-            {...hoverDriver}
-            className="text-sm text-landing-text hover:text-foreground transition-colors"
+      <div className="flex items-center justify-between px-8 py-6 md:px-16">
+        <div className="flex items-center gap-8">
+          <a
+            href="#hero"
+            onClick={smoothScroll("#hero")}
+            className="flex items-center gap-3 text-foreground"
           >
-            <AnimatedText>Console</AnimatedText>
-          </motion.a>
-          <SecondaryButton href="#mining" onClick={smoothScroll("#mining")} size="sm">
-            Start mining
-          </SecondaryButton>
+            <Logo />
+            <span className="text-2xl tracking-wide">Verdant</span>
+          </a>
+          <div className="hidden items-center gap-6 lg:flex">
+            {navItems.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                onClick={smoothScroll(item.href)}
+                className="text-base tracking-wide text-foreground transition-opacity hover:opacity-80"
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
         </div>
 
         <button
@@ -101,33 +95,22 @@ export function Navbar() {
                 smoothScroll(item.href)(e);
                 setMenuOpen(false);
               }}
-              className="text-lg text-landing-text transition-colors hover:text-foreground"
+              className="text-xl tracking-wide text-foreground/80 transition-colors hover:text-foreground"
             >
               {item.name}
             </a>
           ))}
-          <div className="mt-2 h-px bg-white/10" />
-          <a
-            href="#console"
+          <div className="mt-2 h-px bg-foreground/10" />
+          <GlowButton
+            className="w-full !text-lg"
             onClick={(e) => {
-              smoothScroll("#console")(e);
-              setMenuOpen(false);
-            }}
-            className="text-lg text-landing-text transition-colors hover:text-foreground"
-          >
-            Console
-          </a>
-          <SecondaryButton
-            href="#mining"
-            size="md"
-            className="w-full"
-            onClick={(e) => {
-              smoothScroll("#mining")(e);
+              e.preventDefault();
+              document.getElementById("mining")?.scrollIntoView({ behavior: "smooth" });
               setMenuOpen(false);
             }}
           >
-            Start mining
-          </SecondaryButton>
+            Launch your orbit
+          </GlowButton>
         </div>
       </Sheet>
     </nav>

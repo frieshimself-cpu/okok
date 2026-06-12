@@ -1,6 +1,7 @@
 import { ChainProvider } from "./context/ChainContext";
 import { Hero } from "./components/Hero";
 import { Navbar } from "./components/Navbar";
+import { ConsoleSection } from "./components/sections/ConsoleSection";
 import { About } from "./components/sections/About";
 import { Protocol } from "./components/sections/Protocol";
 import { Mining } from "./components/sections/Mining";
@@ -10,12 +11,11 @@ import { Footer } from "./components/sections/Footer";
 export default function App() {
   return (
     <ChainProvider>
-      <div className="landing-root font-inter min-h-screen relative overflow-x-hidden">
+      <div className="landing-root relative min-h-screen overflow-x-hidden font-serif">
         <Navbar />
         <Hero />
-        {/* About carries extra top padding so the hero's foreground grass can
-            drift down into the gap without covering the heading. */}
         <main className="relative">
+          <ConsoleSection />
           <About />
           <Protocol />
           <Mining />
