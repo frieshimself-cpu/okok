@@ -1,0 +1,33 @@
+name: CI
+
+# Validates every push and PR: install, test, production build. Deployment is
+# handled by Vercel's Git integration (and a one-click button in the README),
+# so CI stays a fast, host-agnostic green check rather than a deploy job that
+# depends on a host being pre-configured.
+
+on:
+  push:
+    branches:
+      - claude/elegant-noether-jbgzvy
+      - claude/zealous-archimedes-g9zwpc
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          if-no-files-found: error

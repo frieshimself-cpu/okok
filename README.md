@@ -127,10 +127,17 @@ Node is pinned to **22.x** (`.nvmrc` + `engines`), matching CI. From a terminal:
 `npm i -g vercel && vercel --prod`. It's a single page (hash anchors, no
 client-side routing), so no SPA rewrites are needed.
 
-### GitHub Pages (already wired)
+### Continuous integration
 
-Every push to the deploy branches runs `.github/workflows/deploy.yml`, which
-tests, builds and publishes `dist/` to Pages.
+Every push and PR runs `.github/workflows/ci.yml` (install, `npm test`,
+`npm run build`) and uploads `dist/` as an artifact — a fast, host-agnostic
+green check. Deployment itself is Vercel's job via its Git integration, so once
+the project is imported on Vercel, **every push auto-deploys** with no extra
+workflow.
+
+> Prefer GitHub Pages instead? It just needs a one-time toggle (repo Settings →
+> Pages → Source: "GitHub Actions") plus a Pages deploy workflow — ask and it's
+> a two-minute add-back.
 
 ### For the bots
 
