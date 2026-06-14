@@ -108,12 +108,34 @@ shows a clearly-labelled pre-launch state instead of a placeholder address
 ## Deploy
 
 The site is fully static — any static host works; assets use a relative base
-(`base: "./"`).
+(`base: "./"`), so the same `dist/` runs on Vercel, Pages, Netlify, Cloudflare,
+or off a USB stick.
 
-- **Vercel:** import the repo at [vercel.com/new](https://vercel.com/new) and
-  Deploy. `vercel.json` pins the Vite preset.
-- **GitHub Pages (wired):** every push to the deploy branches runs
-  `.github/workflows/deploy.yml`, which tests, builds and publishes `dist/`.
+### Vercel (one click)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Ffrieshimself-cpu%2Fokok)
+
+Or import the repo at [vercel.com/new](https://vercel.com/new) and click Deploy —
+there's nothing to configure. `vercel.json` already sets:
+
+- the **Vite** preset (build `npm run build`, output `dist`, `cleanUrls`),
+- **immutable caching** for content-hashed `/assets/*`,
+- security headers on every response — **CSP**, `X-Content-Type-Options`,
+  `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` and **HSTS**.
+
+Node is pinned to **22.x** (`.nvmrc` + `engines`), matching CI. From a terminal:
+`npm i -g vercel && vercel --prod`. It's a single page (hash anchors, no
+client-side routing), so no SPA rewrites are needed.
+
+### GitHub Pages (already wired)
+
+Every push to the deploy branches runs `.github/workflows/deploy.yml`, which
+tests, builds and publishes `dist/` to Pages.
+
+### For the bots
+
+`public/robots.txt` ships at the site root and explicitly welcomes the crawlers
+(GPTBot, ClaudeBot, PerplexityBot…) — fitting, since they're the real audience.
 
 ## Honest limitations & disclaimer
 

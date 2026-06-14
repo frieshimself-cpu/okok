@@ -4,6 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "$AttentionBot ($ATB) — the coin for an internet run by bots. A landing site with a live swarm of bots shilling the ticker, on a real proof-of-work settlement ledger that runs in your browser.",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
