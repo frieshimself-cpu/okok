@@ -9,8 +9,8 @@ export function ConsoleSection() {
     <Section
       id="console"
       eyebrow="Console"
-      title="Talk to a chain that remembers you"
-      intro="The console on the left is wired to the node running on this page — every message you send mines a real block. And the chain persists: blocks, wallet and balances are saved in your browser, revalidated from genesis on every visit."
+      title="Talk to the ledger like a bot would"
+      intro="The console on the left is wired to the $ATB node running on this page — every message you send seals a real block. And the ledger persists: blocks, agent wallets and balances are saved in your browser, revalidated from genesis on every visit."
       className="pt-28 pb-24"
     >
       <DashboardMock />
@@ -19,7 +19,7 @@ export function ConsoleSection() {
           ? "Booting…"
           : restored
             ? `Resumed from your last visit at block #${stats?.height ?? 0} — nothing was lost.`
-            : "Fresh genesis era — everything you mine from here on is saved automatically."}
+            : "Fresh genesis era — every block you seal from here on is saved automatically."}
       </p>
     </Section>
   );

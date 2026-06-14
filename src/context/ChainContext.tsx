@@ -1,5 +1,5 @@
 /**
- * One Verdant node for the whole page. On mount it restores the chain and
+ * One AttentionBot ledger node for the whole page. On mount it restores the chain and
  * wallets from localStorage (fully revalidating from genesis — corrupted
  * storage is discarded, not trusted) or boots fresh by mining the first
  * blocks. Every successful operation persists, so the chain survives
@@ -36,7 +36,7 @@ export const PAGE_CHAIN_CONFIG: ChainConfig = {
 /** Yield to the event loop every N hashes so mining never janks the page. */
 const YIELD_EVERY = 2_500;
 
-const STORAGE_KEY = "verdant:state:v1";
+const STORAGE_KEY = "attentionbot:ledger:v1";
 
 interface PersistedState {
   version: 1;
@@ -193,7 +193,7 @@ export function ChainProvider({ children }: { children: ReactNode }) {
       };
       return true;
     } catch (err) {
-      console.warn("verdant: discarding unusable saved state", err);
+      console.warn("attentionbot: discarding unusable saved state", err);
       try {
         localStorage.removeItem(STORAGE_KEY);
       } catch {
@@ -238,7 +238,7 @@ export function ChainProvider({ children }: { children: ReactNode }) {
         await freshBoot();
       }
       setBooting(false);
-    })().catch((err) => console.error("verdant boot failed", err));
+    })().catch((err) => console.error("attentionbot ledger boot failed", err));
   }, [freshBoot, refresh, tryRestore]);
 
   /** Mine one block for the page wallet. Not queued — wrap with enqueue(). */
@@ -267,9 +267,9 @@ export function ChainProvider({ children }: { children: ReactNode }) {
     const mined = await rawMine();
     if (!mined) return "Mining was interrupted.";
     return (
-      `Signed a transfer of ${amount} LEAF (fee 1) with ECDSA P-256, then mined block #${mined.block.index} ` +
+      `Agent signed a transfer of ${amount} ATB (fee 1) with ECDSA P-256, then sealed block #${mined.block.index} ` +
       `to confirm it — ${fmtHash(mined.block.hash)} after ${mined.attempts.toLocaleString()} hashes. ` +
-      `Balances now: you ${chain.getBalance(wallet.address)} LEAF, peer ${chain.getBalance(peer.address)} LEAF.`
+      `Balances now: you ${chain.getBalance(wallet.address)} ATB, counterparty agent ${chain.getBalance(peer.address)} ATB.`
     );
   }, [rawMine, refresh]);
 
@@ -327,9 +327,9 @@ export function ChainProvider({ children }: { children: ReactNode }) {
 
         if (/balance|wallet|holding|supply|rich/.test(prompt)) {
           return (
-            `Your wallet ${shortAddress(wallet.address)} holds ${chain.getBalance(wallet.address)} LEAF; ` +
-            `the peer wallet ${shortAddress(peer.address)} holds ${chain.getBalance(peer.address)} LEAF. ` +
-            `Total supply is ${chain.totalSupply()} LEAF across ${chain.height} blocks — every unit traceable to a coinbase.`
+            `Your agent wallet ${shortAddress(wallet.address)} holds ${chain.getBalance(wallet.address)} ATB; ` +
+            `the counterparty agent ${shortAddress(peer.address)} holds ${chain.getBalance(peer.address)} ATB. ` +
+            `Total supply is ${chain.totalSupply()} ATB across ${chain.height} blocks — every unit traceable to a coinbase.`
           );
         }
 
@@ -350,8 +350,8 @@ export function ChainProvider({ children }: { children: ReactNode }) {
         return (
           `Sealed block #${mined.block.index} in ${fmtSecs(mined.durationMs)} — ${fmtHash(mined.block.hash)} at ` +
           `${mined.block.difficulty}-bit difficulty, ${mined.attempts.toLocaleString()} hashes. ` +
-          `Reward ${mined.block.transactions[0].amount} LEAF → ${shortAddress(wallet.address)}. ` +
-          `Height ${chain.height}, supply ${chain.totalSupply()} LEAF, chain valid ✓`
+          `Reward ${mined.block.transactions[0].amount} ATB → ${shortAddress(wallet.address)}. ` +
+          `Height ${chain.height}, supply ${chain.totalSupply()} ATB, ledger valid ✓`
         );
       }),
     [enqueue, rawAudit, rawMine, rawSend],

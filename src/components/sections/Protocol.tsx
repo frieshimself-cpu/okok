@@ -6,22 +6,22 @@ const features = [
   {
     icon: "bolt",
     title: "SHA-256 proof-of-work",
-    body: "Every block is sealed by grinding nonces until its hash clears a leading-zero-bit target. The hash function is hand-rolled TypeScript, verified against NIST test vectors, and retargets ±1 bit to chase a steady block time.",
+    body: "Agents seal each block by grinding nonces until the hash clears a leading-zero-bit target — no human in the loop. The hash function is hand-rolled TypeScript, verified against NIST test vectors, and retargets ±1 bit to hold a steady block time.",
   },
   {
     icon: "key",
-    title: "ECDSA wallets",
-    body: "Keys are minted in your browser with WebCrypto (P-256). Addresses are hashes of public keys; every transfer carries a signature over a canonical payload plus the sender's exact nonce — so replayed transactions bounce.",
+    title: "ECDSA agent wallets",
+    body: "Every bot mints its own keypair in-browser with WebCrypto (P-256). Addresses are hashes of public keys; each transfer carries a signature over a canonical payload plus the sender's exact nonce — so a replayed machine transaction bounces.",
   },
   {
     icon: "account_tree",
     title: "Merkle-sealed history",
-    body: "Headers commit to a Merkle root of their transactions, and each block to its parent's hash. Change one amount anywhere in history and every proof above it shatters — the audit catches it instantly.",
+    body: "Headers commit to a Merkle root of their transactions, and each block to its parent's hash. Change one amount anywhere in history and every proof above it shatters — the audit catches a tampered ledger instantly.",
   },
   {
     icon: "alt_route",
     title: "Heaviest-chain consensus",
-    body: "Competing chains are adopted only when they are fully valid and carry more cumulative proof-of-work — the same fork-choice rule Bitcoin runs, demonstrated end-to-end in the test suite and CLI demo.",
+    body: "Competing histories are adopted only when fully valid and carrying more cumulative work — the same fork-choice rule Bitcoin runs, so a swarm of agents converges on one ledger without a coordinator.",
   },
 ];
 
@@ -29,9 +29,9 @@ export function Protocol() {
   return (
     <Section
       id="protocol"
-      eyebrow="Protocol"
-      title="Four rules, no exceptions"
-      intro="Everything below is enforced on every block — whether it was mined on this page or handed to the node by a rival chain."
+      eyebrow="The Protocol"
+      title="Settlement no human has to sign off on"
+      intro="$ATB rides a real proof-of-work ledger — the kind of rail machines can transact across trustlessly, no bank hours, no approvals. Everything below is enforced on every block, whether a bot mined it on this page or a rival swarm handed it over."
       className="py-24"
     >
       <div className="grid gap-3 sm:grid-cols-2">

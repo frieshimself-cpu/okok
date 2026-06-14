@@ -1,8 +1,9 @@
 /**
- * Verdant end-to-end demo — run with `npm run demo`.
+ * $AttentionBot ($ATB) settlement-ledger demo — run with `npm run demo`.
  *
- * Spins up a node, mints wallets, mines blocks, moves money, audits the
- * chain, demonstrates tamper detection and heaviest-chain fork choice.
+ * Spins up a node, mints agent wallets, seals blocks, moves money, audits the
+ * ledger, demonstrates tamper detection and heaviest-chain fork choice — the
+ * same engine the website runs in your browser.
  */
 
 import {
@@ -52,7 +53,7 @@ function describeBlock(block: Block, attempts: number, ms: number) {
 }
 
 async function main() {
-  log(`\n${bold(" VERDANT")} ${dim("· a proof-of-work blockchain, end to end")}`);
+  log(`\n${bold(" ATTENTIONBOT")} ${cyan("$ATB")} ${dim("· the machine-economy settlement ledger, end to end")}`);
 
   step(1, "Mint wallets (ECDSA P-256 via WebCrypto)");
   const node = new Blockchain(CONFIG);
@@ -66,21 +67,21 @@ async function main() {
   step(2, "Mine the first block — coinbase pays the miner");
   const b1 = await node.mineBlock(miner.address);
   describeBlock(b1.block, b1.attempts, b1.durationMs);
-  log(`   miner balance: ${green(`${node.getBalance(miner.address)} LEAF`)}`);
+  log(`   miner balance: ${green(`${node.getBalance(miner.address)} ATB`)}`);
 
   step(3, "Sign transfers, admit them to the mempool, mine them in");
   const t1 = await miner.createTransaction(alice.address, 20, 2, node.getPendingNonce(miner.address));
   await node.addTransaction(t1);
   const t2 = await miner.createTransaction(bob.address, 5, 1, node.getPendingNonce(miner.address));
   await node.addTransaction(t2);
-  log(dim(`   tx ${txId(t1).slice(0, 16)}… miner → alice, 20 LEAF (fee 2)`));
-  log(dim(`   tx ${txId(t2).slice(0, 16)}… miner → bob,   5 LEAF (fee 1)`));
+  log(dim(`   tx ${txId(t1).slice(0, 16)}… miner → alice, 20 ATB (fee 2)`));
+  log(dim(`   tx ${txId(t2).slice(0, 16)}… miner → bob,   5 ATB (fee 1)`));
   const b2 = await node.mineBlock(miner.address);
   describeBlock(b2.block, b2.attempts, b2.durationMs);
 
   const t3 = await alice.createTransaction(bob.address, 7, 1, node.getPendingNonce(alice.address));
   await node.addTransaction(t3);
-  log(dim(`   tx ${txId(t3).slice(0, 16)}… alice → bob,   7 LEAF (fee 1)`));
+  log(dim(`   tx ${txId(t3).slice(0, 16)}… alice → bob,   7 ATB (fee 1)`));
   const b3 = await node.mineBlock(miner.address);
   describeBlock(b3.block, b3.attempts, b3.durationMs);
 
@@ -88,10 +89,10 @@ async function main() {
   for (const [name, wallet] of [["miner", miner], ["alice", alice], ["bob", bob]] as const) {
     log(
       `   ${name.padEnd(6)} ${dim(shortAddress(wallet.address))}  ` +
-        green(`${node.getBalance(wallet.address)} LEAF`),
+        green(`${node.getBalance(wallet.address)} ATB`),
     );
   }
-  log(dim(`   total supply ${node.totalSupply()} LEAF · height ${node.height} · work 2^${Math.log2(node.work()).toFixed(2)}`));
+  log(dim(`   total supply ${node.totalSupply()} ATB · height ${node.height} · work 2^${Math.log2(node.work()).toFixed(2)}`));
 
   step(5, "Audit, then try to rewrite history");
   const audit = await node.audit();
@@ -100,7 +101,7 @@ async function main() {
   const tampered: Block[] = JSON.parse(JSON.stringify(node.chain));
   tampered[2].transactions[1].amount = 999_999;
   const crude = await Blockchain.validateChain(tampered, node.config);
-  log(`   bump a past transfer to 999,999 LEAF → ${red(`INVALID ✗  (${crude.error})`)}`);
+  log(`   bump a past transfer to 999,999 ATB → ${red(`INVALID ✗  (${crude.error})`)}`);
 
   tampered[2].merkleRoot = merkleRoot(tampered[2].transactions.map(txId));
   tampered[2].hash = computeBlockHash(tampered[2]);
@@ -122,7 +123,7 @@ async function main() {
   );
   await node.replaceChain(rival.chain);
   log(`   adopted the heavier rival chain → height ${bold(String(node.height))}, ` +
-    `rival miner now holds ${green(`${node.getBalance(rivalMiner.address)} LEAF`)}`);
+    `rival miner now holds ${green(`${node.getBalance(rivalMiner.address)} ATB`)}`);
   await rival.replaceChain(node.chain).then(
     () => log(red("   (should not happen)")),
     (err: Error) => log(`   rival refuses our identical-weight chain → ${green("correctly rejected")} ${dim(`(${err.message})`)}`),

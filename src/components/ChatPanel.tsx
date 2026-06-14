@@ -13,17 +13,17 @@ const SEED_MESSAGES: Message[] = [
   {
     role: "assistant",
     seeded: true,
-    text: "Welcome to the Verdant console — a full proof-of-work blockchain is running inside this page. I can mint wallets, sign transactions and mine blocks. What first?",
+    text: "Welcome to the $ATB console — the settlement ledger for the machine economy, running live inside this page. I can mint agent wallets, sign transactions and seal blocks. What first?",
   },
   {
     role: "user",
     seeded: true,
-    text: "Mine a block and show me the proof.",
+    text: "Seal a block and show me the proof.",
   },
   {
     role: "assistant",
     seeded: true,
-    text: "Every message you send below mines a real block: transactions signed with ECDSA, sealed with SHA-256 proof-of-work, the whole chain revalidated from genesis. Try it here — or scroll to the mining lab for the full explorer.",
+    text: "Every message you send below seals a real block: transactions signed with ECDSA, sealed with SHA-256 proof-of-work, the whole ledger revalidated from genesis. Try it here — or scroll up to the Ledger for the full explorer.",
   },
 ];
 
@@ -52,7 +52,7 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
         ...prev,
         {
           role: "assistant",
-          text: `The chain rejected that: ${err instanceof Error ? err.message : String(err)}`,
+          text: `The ledger rejected that: ${err instanceof Error ? err.message : String(err)}`,
         },
       ]);
     } finally {
@@ -74,8 +74,8 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
           <MIcon name="terminal" size={14} className="text-white/80" />
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-white">Verdant console</span>
-          <span className="text-[11px] text-white/40">Talk to the chain running on this page</span>
+          <span className="text-sm font-medium text-white">$ATB console</span>
+          <span className="text-[11px] text-white/40">Talk to the ledger running on this page</span>
         </div>
         <span className="ml-auto flex items-center gap-1.5 text-[10px] tabular-nums text-white/40">
           <span
@@ -111,7 +111,7 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
         {pending && (
           <div className="flex justify-start">
             <div className="max-w-[85%] rounded-2xl border border-white/5 bg-white/5 px-4 py-2.5 text-sm leading-relaxed text-white/50">
-              mining<span className="animate-pulse">…</span>
+              sealing<span className="animate-pulse">…</span>
             </div>
           </div>
         )}
@@ -129,7 +129,7 @@ export function ChatPanel({ animateMessagesIn = false }: { animateMessagesIn?: b
                 void send();
               }
             }}
-            placeholder="Type anything to mine a block…"
+            placeholder="Type anything to seal a block…"
             className="flex-1 resize-none bg-transparent px-3 py-2 text-sm text-white placeholder:text-white/40 focus:outline-none max-h-32"
           />
           <button

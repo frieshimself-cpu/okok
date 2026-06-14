@@ -69,7 +69,7 @@ describe("wallets and signatures", () => {
   it("derives prefixed addresses from the public key", async () => {
     const a = await Wallet.create();
     const b = await Wallet.create();
-    expect(a.address).toMatch(/^leaf[0-9a-f]{40}$/);
+    expect(a.address).toMatch(/^atb[0-9a-f]{40}$/);
     expect(a.address).not.toBe(b.address);
   });
 

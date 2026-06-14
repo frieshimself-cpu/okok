@@ -74,9 +74,9 @@ export function Mining() {
   return (
     <Section
       id="mining"
-      eyebrow="Mining"
-      title="Mine your next block right here"
-      intro="These buttons drive the same node the console talks to. Mine a block and watch it land in the explorer; send LEAF and see the transfer confirmed; audit the whole chain whenever you like. Everything is saved in your browser — reload and it's all still here."
+      eyebrow="The Ledger"
+      title="Watch the machines settle, live"
+      intro="This is the $ATB settlement ledger — a real proof-of-work node running in your browser. Seal a block and watch it land in the explorer; settle ATB between two agent wallets; audit the whole ledger whenever you like. Everything persists in your browser — reload and the machines pick up where they left off."
       className="py-24"
     >
       <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
@@ -114,7 +114,7 @@ export function Mining() {
                       {block.difficulty} bits
                     </span>
                     <span className="hidden shrink-0 text-[11px] tabular-nums text-accent/70 md:inline">
-                      {block.index === 0 ? "—" : `+${block.transactions[0]?.amount ?? 0} LEAF`}
+                      {block.index === 0 ? "—" : `+${block.transactions[0]?.amount ?? 0} ATB`}
                     </span>
                     <span className="w-16 shrink-0 text-right text-[11px] tabular-nums text-white/40">
                       {block.index === 0 ? "genesis" : age(block.timestamp)}
@@ -137,7 +137,7 @@ export function Mining() {
             <div className="liquid-glass rounded-2xl p-5 font-inter">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] uppercase tracking-wider text-white/40">
-                  Your wallet
+                  Your agent wallet
                 </span>
                 <button
                   type="button"
@@ -150,11 +150,11 @@ export function Mining() {
               </div>
               <p className="mt-3 text-3xl tabular-nums tracking-tight text-foreground">
                 {stats ? stats.balance.toLocaleString() : "—"}{" "}
-                <span className="text-base text-accent/90">LEAF</span>
+                <span className="text-base text-accent/90">ATB</span>
               </p>
               <p className="mt-1 text-[11px] tabular-nums text-white/40">
-                peer wallet {stats ? shortAddress(stats.peerAddress) : "…"} holds{" "}
-                {stats?.peerBalance ?? 0} LEAF · saved in this browser
+                counterparty agent {stats ? shortAddress(stats.peerAddress) : "…"} holds{" "}
+                {stats?.peerBalance ?? 0} ATB · saved in this browser
               </p>
             </div>
           </FadeUp>
@@ -166,9 +166,9 @@ export function Mining() {
                 onClick={() => void onMine()}
                 disabled={busy}
                 className="h-11 w-full rounded-full bg-accent text-sm font-medium text-accent-foreground transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
-                style={{ boxShadow: "0 2px 40px hsl(45 70% 50% / 0.35)" }}
+                style={{ boxShadow: "0 2px 40px hsl(186 90% 52% / 0.35)" }}
               >
-                {booting ? "Booting…" : mining ? "Mining…" : "⛏ Mine a block"}
+                {booting ? "Booting…" : mining ? "Sealing…" : "⛏ Seal a block"}
               </button>
               <div className="h-4 text-center text-[11px] tabular-nums text-accent/80">
                 {mining && progress
@@ -181,7 +181,7 @@ export function Mining() {
                 disabled={busy}
                 className="h-11 w-full rounded-full border border-landing-border bg-landing-surface text-sm font-medium text-foreground transition-colors hover:bg-landing-surface-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Send LEAF to the peer
+                Settle ATB with another agent
               </button>
               <button
                 type="button"
@@ -189,14 +189,14 @@ export function Mining() {
                 disabled={busy}
                 className="h-11 w-full rounded-full border border-landing-border bg-landing-surface text-sm font-medium text-foreground transition-colors hover:bg-landing-surface-hover disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Audit the chain from genesis
+                Audit the ledger from genesis
               </button>
               <p
                 aria-live="polite"
                 className="min-h-[3.25rem] pt-1 text-xs leading-relaxed text-landing-text-muted"
               >
                 {lastAction ??
-                  "Every action here is a real chain operation — state auto-saves in this browser."}
+                  "Every action here is a real ledger operation — state auto-saves in this browser."}
               </p>
               <button
                 type="button"
@@ -204,7 +204,7 @@ export function Mining() {
                 disabled={busy}
                 className="w-full text-center text-xs text-foreground/35 underline underline-offset-4 transition-colors hover:text-foreground/70 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Reset chain & wallet
+                Reset ledger & wallet
               </button>
             </div>
           </FadeUp>

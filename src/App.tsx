@@ -1,11 +1,12 @@
 import { ChainProvider } from "./context/ChainContext";
 import { Hero } from "./components/Hero";
 import { Navbar } from "./components/Navbar";
-import { ConsoleSection } from "./components/sections/ConsoleSection";
+import { Swarm } from "./components/sections/Swarm";
 import { About } from "./components/sections/About";
 import { Protocol } from "./components/sections/Protocol";
 import { Mining } from "./components/sections/Mining";
 import { Tokenomics } from "./components/sections/Tokenomics";
+import { ConsoleSection } from "./components/sections/ConsoleSection";
 import { Footer } from "./components/sections/Footer";
 
 export default function App() {
@@ -15,11 +16,12 @@ export default function App() {
         <Navbar />
         <Hero />
         <main className="relative">
-          <ConsoleSection />
+          <Swarm />
           <About />
           <Protocol />
           <Mining />
           <Tokenomics />
+          <ConsoleSection />
         </main>
         <Footer />
       </div>

@@ -14,15 +14,15 @@ for (let era = 0; ; era++) {
 const maxSupply = eras.reduce((sum, reward) => sum + reward * PAGE_CHAIN_CONFIG.halvingInterval, 0);
 
 const parameters = [
-  { label: "Block reward (era 0)", value: `${PAGE_CHAIN_CONFIG.blockReward} LEAF` },
+  { label: "Block reward (era 0)", value: `${PAGE_CHAIN_CONFIG.blockReward} ATB` },
   { label: "Halving interval", value: `every ${PAGE_CHAIN_CONFIG.halvingInterval} blocks` },
-  { label: "Max supply", value: `${maxSupply.toLocaleString()} LEAF` },
+  { label: "Max supply", value: `${maxSupply.toLocaleString()} ATB` },
   { label: "Target block time", value: `${PAGE_CHAIN_CONFIG.targetBlockTimeMs / 1000} s` },
   {
     label: "Difficulty window",
     value: `${PAGE_CHAIN_CONFIG.minDifficulty}–${PAGE_CHAIN_CONFIG.maxDifficulty} bits, retarget ±1`,
   },
-  { label: "Transaction fees", value: "paid to the miner, forever" },
+  { label: "Transaction fees", value: "paid to the sealing agent, forever" },
 ];
 
 export function Tokenomics() {
@@ -31,7 +31,7 @@ export function Tokenomics() {
       id="tokenomics"
       eyebrow="Tokenomics"
       title="Scarce by construction"
-      intro={`The coinbase reward halves every ${PAGE_CHAIN_CONFIG.halvingInterval} blocks until emission ends — these aren't marketing numbers, they're consensus rules: a coinbase that overpays by a single LEAF is rejected by every validator.`}
+      intro={`The coinbase reward halves every ${PAGE_CHAIN_CONFIG.halvingInterval} blocks until emission ends — these aren't marketing numbers, they're consensus rules an agent can't talk its way around: a coinbase that overpays by a single ATB is rejected by every validator in the swarm.`}
       className="py-24"
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
@@ -59,7 +59,7 @@ export function Tokenomics() {
             </div>
             <p className="mt-5 text-xs leading-relaxed text-landing-text-muted">
               {eras.length} eras × {PAGE_CHAIN_CONFIG.halvingInterval} blocks ={" "}
-              {maxSupply.toLocaleString()} LEAF, ever. After the last era miners earn fees only.
+              {maxSupply.toLocaleString()} ATB, ever. After the last era, agents earn fees only.
             </p>
           </div>
         </FadeUp>
@@ -83,8 +83,9 @@ export function Tokenomics() {
           <div>
             <p className="text-2xl text-foreground">Looking for the tradable coin?</p>
             <p className="mt-1 max-w-[520px] font-inter text-sm leading-relaxed text-landing-text-muted">
-              The Verdant memecoin lives on Solana via pump.fun — a community token, separate from
-              the LEAF demo chain mining on this page. No utility claims, do your own research.
+              The $AttentionBot memecoin launches on Solana via pump.fun — a community token, separate
+              from the in-browser settlement ledger demonstrated on this page. No utility promises, no
+              roadmap a human signed. Do your own research; the bots already did theirs.
             </p>
           </div>
           <TokenCA className="w-full shrink-0 sm:w-auto sm:max-w-[460px]" />

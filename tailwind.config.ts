@@ -7,6 +7,7 @@ export default {
       fontFamily: {
         inter: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
         serif: ["'Instrument Serif'", "Georgia", "serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
         background: "hsl(var(--background) / <alpha-value>)",
@@ -15,6 +16,7 @@ export default {
           DEFAULT: "hsl(var(--accent) / <alpha-value>)",
           foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
         },
+        accent2: "hsl(var(--accent-2) / <alpha-value>)",
         landing: {
           surface: "rgba(255,255,255,0.10)",
           "surface-hover": "rgba(255,255,255,0.16)",

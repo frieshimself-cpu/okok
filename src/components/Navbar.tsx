@@ -5,11 +5,11 @@ import { Sheet } from "./Sheet";
 import { GlowButton } from "./GlowButton";
 
 const navItems = [
-  { name: "About", href: "#about" },
+  { name: "Swarm", href: "#swarm" },
+  { name: "Thesis", href: "#about" },
   { name: "Protocol", href: "#protocol" },
-  { name: "Mining", href: "#mining" },
+  { name: "Ledger", href: "#mining" },
   { name: "Tokenomics", href: "#tokenomics" },
-  { name: "Console", href: "#console" },
 ];
 
 function smoothScroll(href: string) {
@@ -19,17 +19,23 @@ function smoothScroll(href: string) {
   };
 }
 
-/** Stroke-based zigzag mark — twin valleys, like a "VV". */
+/** Stroke-based bot mark — a square head with two antennae and signal eyes. */
 function Logo() {
   return (
     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden>
-      <path
-        d="M8 10L14 30L20 16L26 30L32 10"
+      <path d="M14 8V12M26 8V12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+      <rect
+        x="9"
+        y="12"
+        width="22"
+        height="18"
+        rx="5"
         stroke="currentColor"
         strokeWidth="3"
-        strokeLinecap="round"
         strokeLinejoin="round"
       />
+      <circle cx="16" cy="21" r="2" fill="currentColor" />
+      <circle cx="24" cy="21" r="2" fill="currentColor" />
     </svg>
   );
 }
@@ -59,7 +65,8 @@ export function Navbar() {
             className="flex items-center gap-3 text-foreground"
           >
             <Logo />
-            <span className="text-2xl tracking-wide">Verdant</span>
+            <span className="text-2xl tracking-wide">AttentionBot</span>
+            <span className="hidden font-mono text-sm text-accent sm:inline">$ATB</span>
           </a>
           <div className="hidden items-center gap-6 lg:flex">
             {navItems.map((item) => (
@@ -105,11 +112,11 @@ export function Navbar() {
             className="w-full !text-lg"
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById("mining")?.scrollIntoView({ behavior: "smooth" });
+              document.getElementById("swarm")?.scrollIntoView({ behavior: "smooth" });
               setMenuOpen(false);
             }}
           >
-            Launch your orbit
+            Enter the swarm
           </GlowButton>
         </div>
       </Sheet>

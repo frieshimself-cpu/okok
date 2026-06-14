@@ -1,7 +1,7 @@
 /**
  * Wallets are ECDSA P-256 key pairs (WebCrypto, available in both Node ≥ 18
  * and every modern browser). An address is the SHA-256 of the SPKI-encoded
- * public key, truncated to 20 bytes and prefixed with "leaf".
+ * public key, truncated to 20 bytes and prefixed with "atb".
  */
 
 import { bytesToHex, hexToBytes, utf8 } from "./bytes";
@@ -10,7 +10,7 @@ import { txSigningPayload, type Transaction } from "./transaction";
 
 const subtle = globalThis.crypto.subtle;
 
-export const ADDRESS_PREFIX = "leaf";
+export const ADDRESS_PREFIX = "atb";
 
 /** Serializable wallet material — what gets persisted to localStorage. */
 export interface WalletExport {

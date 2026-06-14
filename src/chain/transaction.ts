@@ -1,5 +1,5 @@
 /**
- * Transactions. Verdant uses an account model: every address has a balance
+ * Transactions. The ledger uses an account model: every address has a balance
  * and a nonce. A transaction spends from `from`, pays `fee` to the miner and
  * must carry the sender's exact next nonce (which is what makes replaying a
  * captured transaction impossible).

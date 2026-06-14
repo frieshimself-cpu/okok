@@ -1,5 +1,5 @@
 /**
- * The Verdant blockchain.
+ * The AttentionBot settlement ledger.
  *
  * Consensus rules enforced on every block, whether mined locally or received
  * from a peer:
@@ -53,7 +53,7 @@ export const DEFAULT_CONFIG: ChainConfig = {
   maxTransactionsPerBlock: 100,
 };
 
-/** 2026-01-01T00:00:00Z — every Verdant chain grows from the same instant. */
+/** 2026-01-01T00:00:00Z — every AttentionBot ledger grows from the same instant. */
 export const GENESIS_TIMESTAMP = 1_767_225_600_000;
 
 export interface AccountState {
