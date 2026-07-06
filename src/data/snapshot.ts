@@ -30,74 +30,63 @@ export interface SnapshotAnalysis {
   liquidity: number;
 }
 
-export const SNAPSHOT = {
-  generatedAt: "2026-06-12T18:30:00Z",
+export const SNAPSHOT: {
+  generatedAt: string;
+  model: string;
+  marketsScanned: number;
+  analyses: SnapshotAnalysis[];
+} = {
+  generatedAt: "2026-07-06T00:00:00Z",
   model: "claude",
-  marketsScanned: 12,
+  marketsScanned: 9,
   analyses: [
     {
-      id: "2270330",
-      question: "US x Iran permanent peace deal by June 15, 2026?",
-      url: "https://polymarket.com/event/us-x-iran-permanent-peace-deal-by",
-      endDate: "2026-06-15T00:00:00Z",
-      modelProb: 0.06,
-      side: "NO",
-      confidence: "HIGH",
-      rationale:
-        "Three days to produce a deal with explicit permanent-end-to-hostilities language. Diplomacy looks live, but this same market prices a mere ceasefire extension at ~74% by month-end — a permanent treaty inside 72 hours is a far higher bar than 18% implies.",
-      riskNote:
-        "The model can't see this week's news — a finished deal text awaiting signature would flip this instantly.",
-      marketProb: 0.177,
-      volume24h: 5_807_049,
-      liquidity: 473_930,
-    },
-    {
-      id: "2270338",
-      question: "US x Iran permanent peace deal by July 31, 2026?",
-      url: "https://polymarket.com/event/us-x-iran-permanent-peace-deal-by",
-      endDate: "2026-07-31T00:00:00Z",
-      modelProb: 0.4,
+      id: "1654959",
+      question: "Will the Fed increase interest rates by 25 bps after the July 2026 meeting?",
+      url: "https://polymarket.com/event/fed-decision-in-july-181",
+      endDate: "2026-07-29T00:00:00Z",
+      modelProb: 0.07,
       side: "NO",
       confidence: "MEDIUM",
       rationale:
-        "55% for explicit 'permanent peace deal' wording inside seven weeks is rich. Ceasefire extensions and frameworks come first — the market itself gives those only ~74% by June 30 — and diplomatic language upgrades from 'ceasefire' to 'permanent' historically take months.",
+        "The Fed hasn't hiked since 2023 and has never hiked without telegraphing it for months. Three weeks out, 15% on a tail move is the kind of insurance premium that historically decays into a hold — the modal outcome of any FOMC meeting by a wide margin.",
       riskNote:
-        "A scheduled signing ceremony or leaked treaty text since the model's cutoff kills this thesis.",
-      marketProb: 0.545,
-      volume24h: 750_605,
-      liquidity: 182_232,
+        "If recent inflation prints ran hot (after the model's cutoff), a telegraphed hike could already be live.",
+      marketProb: 0.151,
+      volume24h: 400_028,
+      liquidity: 341_528,
     },
     {
-      id: "2002564",
-      question: "Israel x Iran permanent peace deal by June 30, 2026?",
-      url: "https://polymarket.com/event/israel-x-iran-permanent-peace-deal-by",
-      endDate: "2026-06-30T00:00:00Z",
-      modelProb: 0.04,
+      id: "2744616",
+      question: "Will Samuel Alito announce his retirement by July 15, 2026?",
+      url: "https://polymarket.com/event/will-samuel-alito-announce-his-retirement-by",
+      endDate: "2026-12-31T23:59:00Z",
+      modelProb: 0.02,
       side: "NO",
       confidence: "HIGH",
       rationale:
-        "Israel and Iran have no diplomatic relations; an agreement with explicit permanent-peace language inside 18 days would be historically unprecedented even mid-thaw. The 12% price is mostly longshot bias and event-risk premium, not a real path to Yes.",
+        "The traditional window for justice retirement announcements — the end of the Supreme Court term in late June — just passed quietly. Nine remaining days is a narrow slot for an event class that almost never lands mid-July, whatever the long-running rumors say.",
       riskNote:
-        "A US-brokered regional grand bargain could bundle exactly this language with little warning.",
-      marketProb: 0.118,
-      volume24h: 1_074_326,
-      liquidity: 146_491,
+        "Retirement chatter around Alito has persisted for two years; a surprise announcement needs no schedule.",
+      marketProb: 0.051,
+      volume24h: 300_319,
+      liquidity: 139_834,
     },
     {
-      id: "2354003",
-      question: "US announces new Iran agreement/ceasefire extension by June 30?",
-      url: "https://polymarket.com/event/us-announces-new-iran-agreementceasefire-extension-by",
-      endDate: "2026-06-30T00:00:00Z",
-      modelProb: 0.82,
-      side: "YES",
-      confidence: "MEDIUM",
+      id: "2793738",
+      question: "Will Argentina win on 2026-07-07?",
+      url: "https://polymarket.com/event/fifwc-arg-egy-2026-07-07",
+      endDate: "2026-07-07T16:00:00Z",
+      modelProb: 0.67,
+      side: "NO",
+      confidence: "LOW",
       rationale:
-        "Consistency trade: the narrow US-Iran nuclear-deal market alone trades at ~51%, yet this one — which also resolves Yes on a plain ceasefire extension or any framework that keeps the ceasefire — sits only ~23 points higher. The union of paths is worth more than 74%.",
+        "Knockout favorites get overpriced in regulation: this market is 90 minutes only, and heavy favorites' win rate caps near two-thirds because underdogs park the bus and draw mass is fat. At 71% on Argentina, NO pays on any Egypt stalemate through full time.",
       riskNote:
-        "Paths are correlated — one collapse in talks sinks extension, framework and deal together.",
-      marketProb: 0.745,
-      volume24h: 597_844,
-      liquidity: 60_825,
+        "Resolves within a day on team news the model can't see — a weakened Egypt side makes 71% fair.",
+      marketProb: 0.715,
+      volume24h: 283_410,
+      liquidity: 1_297_995,
     },
-  ] satisfies SnapshotAnalysis[],
+  ],
 };

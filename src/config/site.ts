@@ -11,8 +11,8 @@ export const site = {
     "An AI analyst scanning Polymarket around the clock for mispriced odds — picks ranked by edge and explained in plain English. Not financial advice.",
 
   // ── Token ──────────────────────────────────────────────────────────────
-  contractAddress: "9i47URzoMNUdFgkMyV2g4xykVoiBXYWLu84gTQ1zpump",
-  pumpFunUrl: "https://pump.fun/coin/9i47URzoMNUdFgkMyV2g4xykVoiBXYWLu84gTQ1zpump",
+  contractAddress: "35eWMDRdd8z7JuazXrPzSc9kCci59nHVxUtp9q2ipump",
+  pumpFunUrl: "https://pump.fun/coin/35eWMDRdd8z7JuazXrPzSc9kCci59nHVxUtp9q2ipump",
 
   // ── Socials (empty = hidden) ───────────────────────────────────────────
   twitterUrl: "",
